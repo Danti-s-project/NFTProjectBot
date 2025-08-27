@@ -4,6 +4,7 @@ from aiogram.types import Message
 
 from abstraction.Aiogram3User import Aiogram3User
 from abstraction.IMessage import IMessageAdapter
+from abstraction.keyboard.IInlineKeyboard import IInlineKeyboard
 from abstraction.IUser import IUser
 
 
@@ -12,16 +13,14 @@ class Aiogram3MessageAdapter(IMessageAdapter):
     Адаптер для объекта Message из библиотеки aiogram версии 3.x
     """
 
-    def __init__(self, message: Message, command_args: Optional[str] = None):
+    def __init__(self, message: Message):
         """
         Инициализация адаптера для сообщения
 
         Args:
             message (Message): Объект сообщения aiogram
-            command_args (Optional[str]) именнованный аргумент
         """
         self._message = message
-        self.__command_args = command_args
 
     def get_text(self) -> Optional[str]:
         """
@@ -50,21 +49,17 @@ class Aiogram3MessageAdapter(IMessageAdapter):
         """
         return Aiogram3User(self._message.from_user)
 
-    def get_args(self) -> Optional[str]:
-        """
-        Получить аргументы отправленные с командой
-        Например реферальная ссылка t.me/<bot_username>?start=<ref_code>
-
-        :return: вернет аргумент команды или ref_code
-        """
-        return self.__command_args
-
-    async def answer(self, text) -> None:
+    async def answer(self, text, reply_markup: IInlineKeyboard = None) -> None:
         """
         Отправить ответ на сообщение пользователя
 
         :return:
             None
         """
-        await self._message.answer(text)
+
+        # Получаем aiogram клавиатуру
+        if reply_markup:
+            reply_markup = reply_markup.get_keyboard_object()
+
+        await self._message.answer(text, reply_markup=reply_markup)
 

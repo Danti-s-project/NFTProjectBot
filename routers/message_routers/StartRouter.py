@@ -1,8 +1,9 @@
 import os
 
 import aiohttp
+from aiogram.filters import CommandObject
 
-from routers.base_message_router import BaseMessageRouter
+from routers.message_routers.BaseMessageRouter import BaseMessageRouter
 
 
 class StartRouter(BaseMessageRouter):
@@ -13,8 +14,18 @@ class StartRouter(BaseMessageRouter):
     HOST = os.getenv("HOST")
     USERS_PATH = "api/v1/users/"
 
-    def __init__(self, message):
+    def __init__(self, message, command: CommandObject):
+        """
+        Конструктор роутера для команды /start
+        Используется дополнительный параметр command для создания реферальных ссылок.
+        По возможности исключите прямое взаимодействие с API
+
+        :param message: aiogram.types.Message
+        :param command: aiogram.filter.CommandStart
+        """
         super().__init__(message)
+
+        self.__command: CommandObject = command
 
     async def route(self) -> None:
         """
@@ -27,7 +38,7 @@ class StartRouter(BaseMessageRouter):
             await self.__send_hello_message()
             return
 
-        if self.__message.get_args():
+        if self.__command.args:
             await self.create_user_with_ref_code()
         else:
             await self.__create_user()
@@ -80,8 +91,8 @@ class StartRouter(BaseMessageRouter):
         """
 
         # Валидаця рефки
-        ref_is_digit: bool = self.__message.get_args().isdigit()
-        user_exists: bool = await self.__user_exists(int(self.__message.get_args()))
+        ref_is_digit: bool = self.__command.args.isdigit()
+        user_exists: bool = await self.__user_exists(int(self.__command.args))
 
         # если рефка не валидна, создаем юзера без рефки
         if not ref_is_digit or not user_exists:
@@ -94,7 +105,7 @@ class StartRouter(BaseMessageRouter):
             "username": self.__message.get_from_user().get_username(),
             "fullname": self.__message.get_from_user().get_full_name(),
             "language": self.__message.get_from_user().get_language_code(),
-            "ref_user": int(self.__message.get_args())
+            "ref_user": int(self.__command.args)
         }
 
         async with aiohttp.ClientSession() as session:

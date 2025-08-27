@@ -40,17 +40,7 @@ class IMessageAdapter(ABC):
         pass
 
     @abstractmethod
-    def get_args(self) -> Optional[str]:
-        """
-        Получить аргументы отправленные с командой
-        Например реферальная ссылка t.me/<bot_username>?start=<ref_code>
-
-        :return: вернет аргумент команды или ref_code
-        """
-        pass
-
-    @abstractmethod
-    async def answer(self, text) -> None:
+    async def answer(self, text, reply_markup=None) -> None:
         """
         Отправить ответ на сообщение пользователя
         :return: None
