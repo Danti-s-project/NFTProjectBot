@@ -63,3 +63,21 @@ class Aiogram3MessageAdapter(IMessageAdapter):
 
         await self._message.answer(text, reply_markup=reply_markup)
 
+    async def edit_reply_markup(self, reply_markup: IInlineKeyboard) -> None:
+        """
+        Редактировать inline кнопки под сообщением
+
+        :param reply_markup: новая inline клавиатура под сообщением
+        :return: None
+        """
+        await self._message.edit_reply_markup(reply_markup=reply_markup.get_keyboard_object())
+
+    async def edit_message_text(self, text: str) -> None:
+        """
+        Редактировать текст сообщения
+
+        :param text: новый текст сообщения
+        :return: None
+        """
+        await self._message.edit_text(text)
+

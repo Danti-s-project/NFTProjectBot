@@ -46,3 +46,23 @@ class IMessageAdapter(ABC):
         :return: None
         """
         pass
+
+    @abstractmethod
+    async def edit_reply_markup(self, reply_markup) -> None:
+        """
+        Редактировать inline кнопки под сообщением
+
+        :param reply_markup: новая inline клавиатура под сообщением
+        :return: None
+        """
+        pass
+
+    @abstractmethod
+    async def edit_message_text(self, text: str) -> None:
+        """
+        Редактировать текст сообщения
+
+        :param text: новый текст сообщения
+        :return: None
+        """
+        pass
