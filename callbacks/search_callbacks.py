@@ -21,3 +21,7 @@ class ShowFilterPage(CallbackData, prefix="show_filter_page"):
 
 class Action(CallbackData, prefix="action"):
     action: str
+
+
+class Back(CallbackData, prefix="back"):
+    pass

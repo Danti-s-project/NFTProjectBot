@@ -3,11 +3,12 @@ import os
 import aiohttp
 from aiohttp import ClientSession
 
+from abstraction.keyboard.InlineKeyboardFactory import InlineKeyboardFactory
 from routers.callback_query_routers.BaseCallbackQueryRouter import BaseCallbackQueryRouter
 from abstraction.IMessage import IMessageAdapter
 from search_nft_service.keyboard_creators.FiltersChoiceKeyboardCreate import FiltersChoiceKeyboardCreator
 from search_nft_service.SearchStateManager import SearchStateManager
-from callbacks.search_callbacks import Action
+from callbacks.search_callbacks import Action, Back
 
 
 class SearchMenuActionCallbackQueryRouter(BaseCallbackQueryRouter):
@@ -76,7 +77,18 @@ class SearchMenuActionCallbackQueryRouter(BaseCallbackQueryRouter):
 
             message += "\n\n"
 
+
+        # Создаем клавиатуру для сообщения
+
+        keyboard = InlineKeyboardFactory.create_keyboard()
+
+        back_button = InlineKeyboardFactory.create_button()
+        back_button.set_text("Назад")
+        back_button.set_callback_data(Back().pack())
+        keyboard.add_buttons_row([back_button])
+
         await self.__callback_query.get_message().edit_message_text(message)
+        await self.__callback_query.get_message().edit_reply_markup(reply_markup=keyboard)
 
     async def __model_menu_action(self) -> None:
         """

@@ -2,7 +2,7 @@ from typing import Optional
 
 from abstraction.keyboard.InlineKeyboardFactory import InlineKeyboardFactory
 from abstraction.keyboard.IInlineKeyboard import IInlineKeyboard
-from callbacks.search_callbacks import ShowFilterPage, ChoiceFilter
+from callbacks.search_callbacks import ShowFilterPage, ChoiceFilter, Back
 
 
 class FiltersChoiceKeyboardCreator:
@@ -72,3 +72,9 @@ class FiltersChoiceKeyboardCreator:
             row.append(button)
 
         self.__keyboard.add_buttons_row(row)
+
+        # Добавляем кнопку назад
+        back_button = InlineKeyboardFactory.create_button()
+        back_button.set_text("Назад")
+        back_button.set_callback_data(Back().pack())
+        self.__keyboard.add_buttons_row([back_button])

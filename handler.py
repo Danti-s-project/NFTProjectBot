@@ -10,7 +10,7 @@ from routers.message_routers.SearchRouter import SearchRouter
 from routers.callback_query_routers.ChoiceCollectionCallbackQueryRouter import ChoiceCollectionCallbackQueryRouter
 from routers.callback_query_routers.ShowCollectionsPageCallbackQueryRouter import ShowCollectionsPageCallbackQueryRouter
 from routers.callback_query_routers.SearchMenuActionCallbackQueryRouter import SearchMenuActionCallbackQueryRouter
-from callbacks.search_callbacks import ChoiceCollection, ShowCollectionsPage
+from callbacks.search_callbacks import ChoiceCollection, ShowCollectionsPage, Back
 from main import dp
 
 
@@ -78,3 +78,13 @@ async def action_in_search_menu_callback_query_handler(callback_query: CallbackQ
     """
     router = SearchMenuActionCallbackQueryRouter(callback_query)
     await router.route()
+
+
+@dp.callback_query(Back.filter())
+async def search_menu_back_button_callback_query_handler(callback_query: CallbackQuery) -> None:
+    """
+    Срабатывает при нажатии кнопки назад в подменю сервиса /search
+
+    :param callback_query: aiogram.types.CallbackQuery
+    :return: None
+    """
