@@ -49,12 +49,13 @@ class Aiogram3MessageAdapter(IMessageAdapter):
         """
         return Aiogram3User(self._message.from_user)
 
-    async def answer(self, text, reply_markup: IInlineKeyboard = None) -> None:
+            async def answer(self, text: str, reply_markup: IInlineKeyboard = None) -> None:
         """
         Отправить ответ на сообщение пользователя
 
-        :return:
-            None
+        :param text: текст сообщения для ответа
+        :param reply_markup: клавиатура для ответа
+        :return: None
         """
 
         # Получаем aiogram клавиатуру

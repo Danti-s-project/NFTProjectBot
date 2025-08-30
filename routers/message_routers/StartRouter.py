@@ -35,7 +35,7 @@ class StartRouter(BaseMessageRouter):
         :return: None
         """
 
-        if await self.__user_exists(self.__message.get_from_user().get_id()):
+        if await self.__user_exists(self._message.get_from_user().get_id()):
             await self.__send_hello_message()
             return
 
@@ -57,7 +57,7 @@ class StartRouter(BaseMessageRouter):
         return bool(await APIService().get_user(user_id))
 
     async def __send_hello_message(self) -> None:
-        pass
+        await self._message.answer("Привет, я бот помойникэ")
 
     async def __create_user(self) -> None:
         """
@@ -67,10 +67,10 @@ class StartRouter(BaseMessageRouter):
         """
 
         request_json = {
-            "user_id": self.__message.get_from_user().get_id(),
-            "username": self.__message.get_from_user().get_username(),
-            "fullname": self.__message.get_from_user().get_full_name(),
-            "language": self.__message.get_from_user().get_language_code()
+            "user_id": self._message.get_from_user().get_id(),
+            "username": self._message.get_from_user().get_username(),
+            "fullname": self._message.get_from_user().get_full_name(),
+            "language": self._message.get_from_user().get_language_code()
         }
 
         await APIService().create_user(request_json)
@@ -93,10 +93,10 @@ class StartRouter(BaseMessageRouter):
 
         # формируем и отправляем запрос
         request_json = {
-            "user_id": self.__message.get_from_user().get_id(),
-            "username": self.__message.get_from_user().get_username(),
-            "fullname": self.__message.get_from_user().get_full_name(),
-            "language": self.__message.get_from_user().get_language_code(),
+            "user_id": self._message.get_from_user().get_id(),
+            "username": self._message.get_from_user().get_username(),
+            "fullname": self._message.get_from_user().get_full_name(),
+            "language": self._message.get_from_user().get_language_code(),
             "ref_user": int(self.__command.args)
         }
 

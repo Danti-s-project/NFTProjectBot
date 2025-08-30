@@ -19,7 +19,7 @@ class SearchMenuActionCallbackQueryRouter(BaseCallbackQueryRouter):
     PAGE_LIMIT = 2
 
     async def route(self) -> None:
-        data = Action.unpack(self.__callback_query.get_data())
+        data = Action.unpack(self._callback_query.get_data())
 
         match data.action:
             case "search":
@@ -38,7 +38,7 @@ class SearchMenuActionCallbackQueryRouter(BaseCallbackQueryRouter):
         :return: None
         """
 
-        search_state = SearchStateManager().get(self.__callback_query.get_from_user().get_id())
+        search_state = SearchStateManager().get(self._callback_query.get_from_user().get_id())
 
         result: NFTSAPIResponse = await APIService().get_nfts(
             search_state.collection,
@@ -79,8 +79,8 @@ class SearchMenuActionCallbackQueryRouter(BaseCallbackQueryRouter):
         back_button.set_callback_data(Back().pack())
         keyboard.add_buttons_row([back_button])
 
-        await self.__callback_query.get_message().edit_message_text(message)
-        await self.__callback_query.get_message().edit_reply_markup(reply_markup=keyboard)
+        await self._callback_query.get_message().edit_message_text(message)
+        await self._callback_query.get_message().edit_reply_markup(reply_markup=keyboard)
 
     async def __model_menu_action(self) -> None:
         """
@@ -89,7 +89,7 @@ class SearchMenuActionCallbackQueryRouter(BaseCallbackQueryRouter):
         :return: None
         """
 
-        search_state = SearchStateManager().get(self.__callback_query.get_from_user().get_id())
+        search_state = SearchStateManager().get(self._callback_query.get_from_user().get_id())
         data: PaginationAPIReponse[Model] = await APIService().get_models(
             f"{SearchMenuActionCallbackQueryRouter.HOST}"
             f"/api/v1/nfts/models/?offset=0&limit={SearchMenuActionCallbackQueryRouter.PAGE_LIMIT}")
@@ -97,7 +97,7 @@ class SearchMenuActionCallbackQueryRouter(BaseCallbackQueryRouter):
 
         keyboard = FiltersChoiceKeyboardCreator(data, data.next).get_keyboard()
 
-        message: IMessageAdapter = self.__callback_query.get_message()
+        message: IMessageAdapter = self._callback_query.get_message()
         await message.edit_reply_markup(reply_markup=keyboard)
         await message.edit_message_text("Выберите модель:")
 
@@ -108,7 +108,7 @@ class SearchMenuActionCallbackQueryRouter(BaseCallbackQueryRouter):
         :return: None
         """
 
-        search_state = SearchStateManager().get(self.__callback_query.get_from_user().get_id())
+        search_state = SearchStateManager().get(self._callback_query.get_from_user().get_id())
         data: PaginationAPIReponse[Backdrop] = await APIService().get_backdrops(
             f"{SearchMenuActionCallbackQueryRouter.HOST}"
             f"/api/v1/nfts/backdropss/?offset=0&limit={SearchMenuActionCallbackQueryRouter.PAGE_LIMIT}")
@@ -116,7 +116,7 @@ class SearchMenuActionCallbackQueryRouter(BaseCallbackQueryRouter):
 
         keyboard = FiltersChoiceKeyboardCreator(data, data.next).get_keyboard()
 
-        message: IMessageAdapter = self.__callback_query.get_message()
+        message: IMessageAdapter = self._callback_query.get_message()
         await message.edit_reply_markup(reply_markup=keyboard)
         await message.edit_message_text("Выберите фон:")
 
@@ -127,7 +127,7 @@ class SearchMenuActionCallbackQueryRouter(BaseCallbackQueryRouter):
         :return: None
         """
 
-        search_state = SearchStateManager().get(self.__callback_query.get_from_user().get_id())
+        search_state = SearchStateManager().get(self._callback_query.get_from_user().get_id())
         data: PaginationAPIReponse[Symbol] = await APIService().get_symbols(
             f"{SearchMenuActionCallbackQueryRouter.HOST}"
             f"/api/v1/nfts/symbols/?offset=0&limit={SearchMenuActionCallbackQueryRouter.PAGE_LIMIT}")
@@ -136,6 +136,6 @@ class SearchMenuActionCallbackQueryRouter(BaseCallbackQueryRouter):
 
         keyboard = FiltersChoiceKeyboardCreator(data, data.next).get_keyboard()
 
-        message: IMessageAdapter = self.__callback_query.get_message()
+        message: IMessageAdapter = self._callback_query.get_message()
         await message.edit_reply_markup(reply_markup=keyboard)
         await message.edit_message_text("Выберите символ:")

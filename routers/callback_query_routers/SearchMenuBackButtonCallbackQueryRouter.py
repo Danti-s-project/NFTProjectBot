@@ -11,8 +11,8 @@ class SearchMenuBackButtonCallbackQueryRouter(BaseCallbackQueryRouter):
 
     async def route(self) -> None:
         keyboard = MainSearchMenuKeyboardMenu().get_keyboard()
-        await self.__callback_query.get_message().edit_reply_markup(reply_markup=keyboard)
-        await self.__callback_query.get_message().edit_message_text("Выставите фильтры:")
+        await self._callback_query.get_message().edit_reply_markup(reply_markup=keyboard)
+        await self._callback_query.get_message().edit_message_text("Выставите фильтры:")
 
     def __create_keyboard(self) -> IInlineKeyboard:
         """
@@ -21,7 +21,7 @@ class SearchMenuBackButtonCallbackQueryRouter(BaseCallbackQueryRouter):
         :return: клавиатура для сообщения
         """
 
-        search_state = SearchStateManager().get(self.__callback_query.get_from_user().get_id())
+        search_state = SearchStateManager().get(self._callback_query.get_from_user().get_id())
         keyboard = MainSearchMenuKeyboardMenu(
             model=search_state.model,
             backdrop=search_state.backdrop,

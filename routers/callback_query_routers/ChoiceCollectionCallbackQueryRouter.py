@@ -21,9 +21,9 @@ class ChoiceCollectionCallbackQueryRouter(BaseCallbackQueryRouter):
         :return: None
         """
 
-        data = ChoiceCollection.unpack(self.__callback_query.get_data())
+        data = ChoiceCollection.unpack(self._callback_query.get_data())
         SearchStateManager().get(
-            self.__callback_query.get_from_user().get_id()
+            self._callback_query.get_from_user().get_id()
         ).collection_name = data.collection_name
 
     async def __send_filters_message(self) -> None:
@@ -33,5 +33,5 @@ class ChoiceCollectionCallbackQueryRouter(BaseCallbackQueryRouter):
         :return: None
         """
         keyboard = MainSearchMenuKeyboardMenu().get_keyboard()
-        await self.__callback_query.get_message().answer(
+        await self._callback_query.get_message().answer(
             "Выставите фильтры:", reply_markup=keyboard)

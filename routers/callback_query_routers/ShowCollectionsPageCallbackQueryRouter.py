@@ -11,10 +11,10 @@ class ShowCollectionsPageCallbackQueryRouter(BaseCallbackQueryRouter):
     async def route(self) -> None:
 
         # Распаковываем callback data
-        callback_data: ShowCollectionsPage = ShowCollectionsPage.unpack(self.__callback_query.get_data())
+        callback_data: ShowCollectionsPage = ShowCollectionsPage.unpack(self._callback_query.get_data())
 
         # Получаем ссылку на пагинацию коллекций
-        search_state = SearchStateManager().get(self.__callback_query.get_from_user().get_id())
+        search_state = SearchStateManager().get(self._callback_query.get_from_user().get_id())
         if callback_data.direction == "next":
             url = search_state.next_page
         else:
@@ -29,7 +29,7 @@ class ShowCollectionsPageCallbackQueryRouter(BaseCallbackQueryRouter):
         ).get_keyboard()
 
         # Отправляем сообщение
-        await self.__callback_query.get_message().edit_reply_markup(reply_markup=keyboard)
+        await self._callback_query.get_message().edit_reply_markup(reply_markup=keyboard)
 
     async def __get_page(self, url: str) -> List[Collection]:
         """
@@ -41,7 +41,7 @@ class ShowCollectionsPageCallbackQueryRouter(BaseCallbackQueryRouter):
 
         response = await APIService().get_collections(url)
 
-        search_state = SearchStateManager().get(self.__callback_query.get_from_user().get_id())
+        search_state = SearchStateManager().get(self._callback_query.get_from_user().get_id())
 
         search_state.next_page = response.next
         search_state.previous_page = response.previous

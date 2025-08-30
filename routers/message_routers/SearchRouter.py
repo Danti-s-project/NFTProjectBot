@@ -24,7 +24,7 @@ class SearchRouter(BaseMessageRouter):
         super().__init__(message)
 
     async def route(self) -> None:
-        user_id = self.__message.get_from_user().get_id()
+        user_id = self._message.get_from_user().get_id()
 
         SearchStateManager().remove(user_id)
         SearchStateManager().create(user_id)
@@ -36,7 +36,7 @@ class SearchRouter(BaseMessageRouter):
         """
 
         reply_markup = self.__create_keyboard()
-        await self.__message.answer(
+        await self._message.answer(
             "Выбери коллекцию подарков которая будет рассматриваться",
             reply_markup=reply_markup)
 
@@ -48,7 +48,7 @@ class SearchRouter(BaseMessageRouter):
 
         # Запрашиваем коллекции с сервера
         nft_collections = await self.__request_first_page()
-        next_page = SearchStateManager().get(self.__message.get_from_user().get_id()).next_page
+        next_page = SearchStateManager().get(self._message.get_from_user().get_id()).next_page
 
         keyboard = CollectionChoiceKeyboardCreator(
             nft_collections,
@@ -66,7 +66,7 @@ class SearchRouter(BaseMessageRouter):
         response = await APIService().get_collections(
             f"{SearchRouter.HOST}{SearchRouter}?limit={SearchRouter.ELEMENTS_IN_PAGE}&offset=0"
         )
-        search_state = SearchStateManager().get(self.__message.get_from_user().get_id())
+        search_state = SearchStateManager().get(self._message.get_from_user().get_id())
         search_state.next_page = response.next
 
         return response.result

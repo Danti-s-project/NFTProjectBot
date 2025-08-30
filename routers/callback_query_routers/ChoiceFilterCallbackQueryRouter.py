@@ -23,8 +23,8 @@ class ChoiceCollectionCallbackQueryRouter(BaseCallbackQueryRouter):
         :return: None
         """
 
-        search_state = SearchStateManager().get(self.__callback_query.get_from_user().get_id())
-        data = ChoiceFilter.unpack(self.__callback_query.get_data())
+        search_state = SearchStateManager().get(self._callback_query.get_from_user().get_id())
+        data = ChoiceFilter.unpack(self._callback_query.get_data())
 
         match data.filter_type:
             case "model":
@@ -42,12 +42,12 @@ class ChoiceCollectionCallbackQueryRouter(BaseCallbackQueryRouter):
         :return: None
         """
 
-        search_state = SearchStateManager().get(self.__callback_query.get_from_user().get_id())
+        search_state = SearchStateManager().get(self._callback_query.get_from_user().get_id())
         keyboard = MainSearchMenuKeyboardMenu(
             model=search_state.model,
             backdrop=search_state.backdrop,
             symbol=search_state.symbol,
         ).get_keyboard()
 
-        await self.__callback_query.get_message().answer(
+        await self._callback_query.get_message().answer(
             "Выставите фильтры:", reply_markup=keyboard)

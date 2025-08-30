@@ -18,8 +18,9 @@ class ICallbackData(ABC):
         """
         pass
 
+    @classmethod
     @abstractmethod
-    def unpack(self, value: str):
+    def unpack(cls, value: str):
         """
         Parse callback data string
 

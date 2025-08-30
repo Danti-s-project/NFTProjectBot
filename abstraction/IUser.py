@@ -37,12 +37,12 @@ class IUser(ABC):
         pass
 
     @abstractmethod
-    def get_language_code(self) -> str:
+    def get_language_code(self) -> str | None:
         """
         Получить код языка пользователя
 
         Returns:
-            str: Код языка пользователя или None, если не установлен
+            str | None: Код языка пользователя или None, если не установлен
         """
         pass
 

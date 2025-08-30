@@ -10,6 +10,7 @@ from routers.message_routers.SearchRouter import SearchRouter
 from routers.callback_query_routers.ChoiceCollectionCallbackQueryRouter import ChoiceCollectionCallbackQueryRouter
 from routers.callback_query_routers.ShowCollectionsPageCallbackQueryRouter import ShowCollectionsPageCallbackQueryRouter
 from routers.callback_query_routers.SearchMenuActionCallbackQueryRouter import SearchMenuActionCallbackQueryRouter
+from routers.callback_query_routers.SearchMenuBackButtonCallbackQueryRouter import SearchMenuBackButtonCallbackQueryRouter
 from callbacks.search_callbacks import ChoiceCollection, ShowCollectionsPage, Back
 from main import dp
 
@@ -88,3 +89,6 @@ async def search_menu_back_button_callback_query_handler(callback_query: Callbac
     :param callback_query: aiogram.types.CallbackQuery
     :return: None
     """
+
+    router = SearchMenuBackButtonCallbackQueryRouter(callback_query)
+    await router.route()

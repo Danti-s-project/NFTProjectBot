@@ -11,4 +11,4 @@ class BaseCallbackQueryRouter(IRouter, ABC):
     Абстрактный класс для всех callback query роутеров
     """
     def __init__(self, callback_query: CallbackQuery):
-        self.__callback_query: Aiogram3CallbackQuery = Aiogram3CallbackQuery(callback_query)
+        self._callback_query: Aiogram3CallbackQuery = Aiogram3CallbackQuery(callback_query)

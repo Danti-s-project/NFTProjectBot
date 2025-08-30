@@ -14,4 +14,4 @@ class BaseMessageRouter(IRouter, ABC):
     Для правильной работы
     """
     def __init__(self, message: Message):
-        self.__message: IMessageAdapter = Aiogram3MessageAdapter(message) # Объявим тип
+        self._message: IMessageAdapter = Aiogram3MessageAdapter(message) # Объявим тип

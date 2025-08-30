@@ -40,9 +40,11 @@ class IMessageAdapter(ABC):
         pass
 
     @abstractmethod
-    async def answer(self, text, reply_markup=None) -> None:
+    async def answer(self, text: str, reply_markup=None) -> None:
         """
         Отправить ответ на сообщение пользователя
+        :param text: текст сообщения для ответа
+        :param reply_markup: клавиатура для ответа
         :return: None
         """
         pass

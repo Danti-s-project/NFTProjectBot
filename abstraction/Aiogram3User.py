@@ -44,12 +44,12 @@ class Aiogram3User(IUser):
         """
         return self._user.full_name
 
-    def get_language_code(self) -> str:
+            def get_language_code(self) -> str | None:
         """
         Получить код языка пользователя
 
         Returns:
-            str: Код языка пользователя или None, если не установлен
+            str | None: Код языка пользователя или None, если не установлен
         """
         return self._user.language_code
 
