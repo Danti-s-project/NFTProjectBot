@@ -1,7 +1,8 @@
 from typing import Optional
 
-from abstraction.keyboard.InlineKeyboardFactory import InlineKeyboardFactory
 from abstraction.keyboard.IInlineKeyboard import IInlineKeyboard
+from abstraction.keyboard.InlineKeyboardFactory import InlineKeyboardFactory
+from api.models import PaginationAPIReponse, BaseDataclass
 from callbacks.search_callbacks import ShowFilterPage, ChoiceFilter, Back
 
 
@@ -12,7 +13,7 @@ class FiltersChoiceKeyboardCreator:
 
     ROW_SIZE = 2
 
-    def __init__(self, items: list,
+    def __init__(self, items: PaginationAPIReponse[BaseDataclass],
                  items_type: str,
                  next_page: Optional[str] = None,
                  previous_page: Optional[str] = None):
@@ -31,11 +32,11 @@ class FiltersChoiceKeyboardCreator:
 
         row = []
 
-        for item in self.__items:
+        for item in self.__items.result:
             button = InlineKeyboardFactory.create_button()
-            button.set_text(item["name"])
+            button.set_text(item.name)
             button.set_callback_data(
-                ChoiceFilter(filter_name=item["name"], filter_type=self.__items_type).pack()
+                ChoiceFilter(filter_name=item.name, filter_type=self.__items_type).pack()
             )
 
             row.append(button)
@@ -62,13 +63,13 @@ class FiltersChoiceKeyboardCreator:
         if self.__previous_page:
             button = InlineKeyboardFactory.create_button()
             button.set_text("Назад")
-            button.set_callback_data(ShowFilterPage(direction='previous').pack())
+            button.set_callback_data(ShowFilterPage(direction='previous', filter_type=self.__items_type).pack())
             row.append(button)
 
         if self.__next_page:
             button = InlineKeyboardFactory.create_button()
             button.set_text("Вперед")
-            button.set_callback_data(ShowFilterPage(direction='next').pack())
+            button.set_callback_data(ShowFilterPage(direction='next', filter_type=self.__items_type).pack())
             row.append(button)
 
         self.__keyboard.add_buttons_row(row)

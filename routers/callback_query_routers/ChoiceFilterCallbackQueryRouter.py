@@ -1,9 +1,11 @@
 from aiogram.types import CallbackQuery
 
+from api.models import Backdrop, Symbol, Model
+from callbacks.search_callbacks import ChoiceFilter
 from routers.callback_query_routers.BaseCallbackQueryRouter import BaseCallbackQueryRouter
 from search_nft_service.SearchStateManager import SearchStateManager
 from search_nft_service.keyboard_creators.MainSearchMenuKeyboardMenu import MainSearchMenuKeyboardMenu
-from callbacks.search_callbacks import ChoiceFilter
+
 
 class ChoiceCollectionCallbackQueryRouter(BaseCallbackQueryRouter):
 
@@ -26,11 +28,11 @@ class ChoiceCollectionCallbackQueryRouter(BaseCallbackQueryRouter):
 
         match data.filter_type:
             case "model":
-                search_state.model = data.filter_name
+                search_state.model = Model(name=data.filter_name)
             case "backdrop":
-                search_state.backdrop = data.filter_name
+                search_state.backdrop = Backdrop(name=data.filter_name)
             case "symbol":
-                search_state.symbol = data.filter_name
+                search_state.symbol = Symbol(name=data.filter_name)
 
 
     async def __send_filters_message(self) -> None:

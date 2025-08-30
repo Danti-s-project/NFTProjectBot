@@ -1,9 +1,10 @@
-import aiohttp
-
-from routers.callback_query_routers.BaseCallbackQueryRouter import BaseCallbackQueryRouter
-from search_nft_service.keyboard_creators.FiltersChoiceKeyboardCreate import FiltersChoiceKeyboardCreator
+from api.APIService import APIService
+from api.models import BaseDataclass, PaginationAPIReponse
 from callbacks.search_callbacks import ShowFilterPage
+from routers.callback_query_routers.BaseCallbackQueryRouter import BaseCallbackQueryRouter
 from search_nft_service.SearchStateManager import SearchStateManager
+from search_nft_service.keyboard_creators.FiltersChoiceKeyboardCreate import FiltersChoiceKeyboardCreator
+
 
 class ShowFilterPageCallbackQueryRouter(BaseCallbackQueryRouter):
     async def route(self) -> None:
@@ -30,7 +31,7 @@ class ShowFilterPageCallbackQueryRouter(BaseCallbackQueryRouter):
         # Отправляем сообщение
         await self.__callback_query.get_message().edit_reply_markup(reply_markup=keyboard)
 
-    async def __get_page(self, url: str) -> list:
+    async def __get_page(self, url: str) -> PaginationAPIReponse:
         """
         Получить следующую страницу с коллекциями
 
@@ -38,13 +39,11 @@ class ShowFilterPageCallbackQueryRouter(BaseCallbackQueryRouter):
         :return: лист с коллекциями
         """
 
-        async with aiohttp.ClientSession() as session:
-            async with session.get(url) as response:
-                response_json =  await response.json()
+        response = await APIService().endpoint_with_pagination_request(url, BaseDataclass)
 
-                search_state = SearchStateManager().get(self.__callback_query.get_from_user().get_id())
+        search_state = SearchStateManager().get(self.__callback_query.get_from_user().get_id())
 
-                search_state.next_page = response_json["next"]
-                search_state.previous_page = response_json["previous"]
+        search_state.next_page = response.next
+        search_state.previous_page = response.previous
 
-                return response_json["result"]
+        return response

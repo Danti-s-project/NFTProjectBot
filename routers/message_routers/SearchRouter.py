@@ -2,10 +2,10 @@ import os
 from typing import List
 
 from aiogram.types import Message
-import aiohttp
 
+from api.APIService import APIService
+from api.models import Collection
 from abstraction.keyboard.IInlineKeyboard import IInlineKeyboard
-from abstraction.keyboard.InlineKeyboardFactory import InlineKeyboardFactory
 from routers.message_routers.BaseMessageRouter import BaseMessageRouter
 from search_nft_service.SearchStateManager import SearchStateManager
 from search_nft_service.keyboard_creators.CollectionChoiceKeyboardCreator import CollectionChoiceKeyboardCreator
@@ -57,19 +57,16 @@ class SearchRouter(BaseMessageRouter):
 
         return keyboard
 
-    async def __request_first_page(self) -> List[dict]:
+    async def __request_first_page(self) -> List[Collection]:
         """
         Запрос к списку коллекций
 
         :return:
         """
-        async with (aiohttp.ClientSession() as session):
-            async with session.get(
-                    f"{SearchRouter.HOST}{SearchRouter}?limit={SearchRouter.ELEMENTS_IN_PAGE}&offset=0"
-            ) as response:
-                response_json = await response.json()
+        response = await APIService().get_collections(
+            f"{SearchRouter.HOST}{SearchRouter}?limit={SearchRouter.ELEMENTS_IN_PAGE}&offset=0"
+        )
+        search_state = SearchStateManager().get(self.__message.get_from_user().get_id())
+        search_state.next_page = response.next
 
-                search_state = SearchStateManager().get(self.__message.get_from_user().get_id())
-                search_state.next_page = response_json
-
-                return response_json["result"]
+        return response.result

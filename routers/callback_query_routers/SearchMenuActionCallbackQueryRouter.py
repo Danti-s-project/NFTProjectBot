@@ -1,11 +1,10 @@
 import os
 
-import aiohttp
-from aiohttp import ClientSession
-
 from abstraction.keyboard.InlineKeyboardFactory import InlineKeyboardFactory
 from routers.callback_query_routers.BaseCallbackQueryRouter import BaseCallbackQueryRouter
 from abstraction.IMessage import IMessageAdapter
+from api.APIService import APIService
+from api.models import NFTSAPIResponse, BaseDataclass, PaginationAPIReponse, Symbol, Model, Backdrop
 from search_nft_service.keyboard_creators.FiltersChoiceKeyboardCreate import FiltersChoiceKeyboardCreator
 from search_nft_service.SearchStateManager import SearchStateManager
 from callbacks.search_callbacks import Action, Back
@@ -15,6 +14,9 @@ class SearchMenuActionCallbackQueryRouter(BaseCallbackQueryRouter):
     """
     Роутер обрабатывающий все нажатия в главном меню /search
     """
+
+    HOST = os.getenv("HOST")
+    PAGE_LIMIT = 2
 
     async def route(self) -> None:
         data = Action.unpack(self.__callback_query.get_data())
@@ -38,24 +40,14 @@ class SearchMenuActionCallbackQueryRouter(BaseCallbackQueryRouter):
 
         search_state = SearchStateManager().get(self.__callback_query.get_from_user().get_id())
 
-        # Формируем параметры запроса
-        params = f"?collection={search_state.collection_name}"
-        if search_state.model:
-            params += f"&model={search_state.model}"
-        if search_state.backdrop:
-            params += f"&backdrop={search_state.backdrop}"
-        if search_state.symbol:
-            params += f"&symbol={search_state.symbol}"
+        result: NFTSAPIResponse = await APIService().get_nfts(
+            search_state.collection,
+            model=search_state.model,
+            backdrop=search_state.backdrop,
+            symbol=search_state.symbol
+        )
 
-        result = []
-
-        async with ClientSession() as session:
-            async with session.get(
-                    f"{os.getenv('HOST')}/api/v1/nfts/nfts/{params}") as response:
-                data = await response.json()
-                result = data["result"]
-
-        message = f"Найдено {len(result)} NFT по запросу: \n\n Коллекция: {search_state.collection_name}\n"
+        message = f"Найдено {len(result.result)} NFT по запросу: \n\n Коллекция: {search_state.collection.name}\n"
         if search_state.model:
             message += f"Модель: {search_state.model}\n"
         if search_state.backdrop:
@@ -65,15 +57,15 @@ class SearchMenuActionCallbackQueryRouter(BaseCallbackQueryRouter):
 
         message += "\n\n"
 
-        for item in result:
+        for item in result.result:
             message += \
-                (f"{item['name']} #{item['issued']}:\n"
-                 f"Модель:{item['model']}\n"
-                 f"Символ: {item['symbol']}"
-                 f"Фон: {item['backdrop']}\n")
+                (f"{item.collection.name}:\n"
+                 f"Модель:{item.model.name}\n"
+                 f"Символ: {item.symbol.name}\n"
+                 f"Фон: {item.backdrop.name}\n")
 
-            if item["owner"]:
-                message += f"Владелец: {item['owner']}"
+            if item.owner:
+                message += f"Владелец: {item.owner.name}"
 
             message += "\n\n"
 
@@ -98,11 +90,12 @@ class SearchMenuActionCallbackQueryRouter(BaseCallbackQueryRouter):
         """
 
         search_state = SearchStateManager().get(self.__callback_query.get_from_user().get_id())
-        data = await self.__request_items("models")
+        data: PaginationAPIReponse[Model] = await APIService().get_models(
+            f"{SearchMenuActionCallbackQueryRouter.HOST}"
+            f"/api/v1/nfts/models/?offset=0&limit={SearchMenuActionCallbackQueryRouter.PAGE_LIMIT}")
+        search_state.next_page = data.next
 
-        search_state.next_page = data["next"]
-
-        keyboard = FiltersChoiceKeyboardCreator(data["result"], data["next"]).get_keyboard()
+        keyboard = FiltersChoiceKeyboardCreator(data, data.next).get_keyboard()
 
         message: IMessageAdapter = self.__callback_query.get_message()
         await message.edit_reply_markup(reply_markup=keyboard)
@@ -116,11 +109,12 @@ class SearchMenuActionCallbackQueryRouter(BaseCallbackQueryRouter):
         """
 
         search_state = SearchStateManager().get(self.__callback_query.get_from_user().get_id())
-        data = await self.__request_items("backdrops")
+        data: PaginationAPIReponse[Backdrop] = await APIService().get_backdrops(
+            f"{SearchMenuActionCallbackQueryRouter.HOST}"
+            f"/api/v1/nfts/backdropss/?offset=0&limit={SearchMenuActionCallbackQueryRouter.PAGE_LIMIT}")
+        search_state.next_page = data.next
 
-        search_state.next_page = data["next"]
-
-        keyboard = FiltersChoiceKeyboardCreator(data["result"], data["next"]).get_keyboard()
+        keyboard = FiltersChoiceKeyboardCreator(data, data.next).get_keyboard()
 
         message: IMessageAdapter = self.__callback_query.get_message()
         await message.edit_reply_markup(reply_markup=keyboard)
@@ -134,25 +128,14 @@ class SearchMenuActionCallbackQueryRouter(BaseCallbackQueryRouter):
         """
 
         search_state = SearchStateManager().get(self.__callback_query.get_from_user().get_id())
-        data = await self.__request_items("symbols")
+        data: PaginationAPIReponse[Symbol] = await APIService().get_symbols(
+            f"{SearchMenuActionCallbackQueryRouter.HOST}"
+            f"/api/v1/nfts/symbols/?offset=0&limit={SearchMenuActionCallbackQueryRouter.PAGE_LIMIT}")
 
-        search_state.next_page = data["next"]
+        search_state.next_page = data.next
 
-        keyboard = FiltersChoiceKeyboardCreator(data["result"], data["next"]).get_keyboard()
+        keyboard = FiltersChoiceKeyboardCreator(data, data.next).get_keyboard()
 
         message: IMessageAdapter = self.__callback_query.get_message()
         await message.edit_reply_markup(reply_markup=keyboard)
         await message.edit_message_text("Выберите символ:")
-
-    async def __request_items(self, items_name: str) -> dict:
-        """
-        Так как представление объектов backdrop, model, symbol одинаково {"name": "name"}
-        Запрос к серверу можно выделить в отдельный метод
-
-        :param items_name: название объекта для поиска
-        :return: результат запроса
-        """
-
-        async with aiohttp.ClientSession() as session:
-            async with session.get(f"{os.getenv("HOST")}/api/v1/nfts/{items_name}/") as response:
-                return await response.json()

@@ -1,9 +1,10 @@
 import os
 
-import aiohttp
 from aiogram.filters import CommandObject
 
 from routers.message_routers.BaseMessageRouter import BaseMessageRouter
+from api.APIService import APIService
+from api.models import User
 
 
 class StartRouter(BaseMessageRouter):
@@ -53,11 +54,7 @@ class StartRouter(BaseMessageRouter):
         :return: True, если пользователь существует, иначе False
         """
 
-        async with aiohttp.ClientSession() as session:
-            async with session.get(
-                f"{StartRouter.HOST}{StartRouter.USERS_PATH}{user_id}"
-            ) as response:
-                return True if response.status == 200 else False
+        return bool(await APIService().get_user(user_id))
 
     async def __send_hello_message(self) -> None:
         pass
@@ -76,12 +73,7 @@ class StartRouter(BaseMessageRouter):
             "language": self.__message.get_from_user().get_language_code()
         }
 
-        async with aiohttp.ClientSession() as session:
-            async with session.post(
-                    f"{StartRouter.HOST}{StartRouter.USERS_PATH}",
-                    json=request_json
-            ):
-                pass
+        await APIService().create_user(request_json)
 
     async def create_user_with_ref_code(self) -> None:
         """
@@ -108,10 +100,5 @@ class StartRouter(BaseMessageRouter):
             "ref_user": int(self.__command.args)
         }
 
-        async with aiohttp.ClientSession() as session:
-            async with session.post(
-                    f"{StartRouter.HOST}{StartRouter.USERS_PATH}",
-                    json=request_json
-            ):
-                pass
+        await APIService().create_user(request_json)
 

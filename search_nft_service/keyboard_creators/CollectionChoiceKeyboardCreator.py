@@ -1,5 +1,6 @@
 from typing import List
 
+from api.models import Collection
 from abstraction.keyboard.IInlineKeyboard import IInlineKeyboard
 from abstraction.keyboard.InlineKeyboardFactory import InlineKeyboardFactory
 from callbacks.search_callbacks import ShowCollectionsPage, ChoiceCollection
@@ -7,13 +8,13 @@ from callbacks.search_callbacks import ShowCollectionsPage, ChoiceCollection
 
 class CollectionChoiceKeyboardCreator:
     """
-    Класс создающий клавиатуру для выбора коллекции
+    Класс, создающий клавиатуру для выбора коллекции.
     Не является паттерном
     """
 
     ROW_SIZE = 2
 
-    def __init__(self, collections: List[dict], next_page=None, previous_page=None):
+    def __init__(self, collections: List[Collection], next_page=None, previous_page=None):
         """
         Конструктор
 
@@ -49,8 +50,8 @@ class CollectionChoiceKeyboardCreator:
         # Создаем кнопки и добавляем в клавиатуру
         for nft_collection in self.__collections:
             button = InlineKeyboardFactory.create_button()
-            button.set_text(nft_collection["alias"])
-            button.set_callback_data(ChoiceCollection(collection_name=nft_collection["name"]).pack())
+            button.set_text(nft_collection.alias)
+            button.set_callback_data(ChoiceCollection(collection_name=nft_collection.name).pack())
 
             row.append(button)
 
