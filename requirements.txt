@@ -15,7 +15,7 @@ multidict==6.6.3
 propcache==0.3.2
 pycodestyle==2.14.0
 pydantic==2.11.7
-pydantic_core==2.33.2
+pydantic_core==2.39.0
 pyflakes==3.4.0
 python-dotenv==1.1.1
 typing-inspection==0.4.1
