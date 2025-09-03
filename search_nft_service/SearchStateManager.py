@@ -1,4 +1,5 @@
-from typing import Dict
+from typing import Optional
+from collections import OrderedDict
 
 from search_nft_service.SearchState import SearchState
 
@@ -22,18 +23,23 @@ class SearchStateManager:
             self.init(*args, **kwargs)
 
     def init(self, *args, **kwargs):
-        self.__search_states: Dict[int, SearchState] = {}  # TODO: Замени на hashmap с заданным размером
+        self.__capacity: int = 32676
+        self.__search_states: OrderedDict[int, SearchState] = OrderedDict()
 
     # С __search_states запрещено работать напрямую
     # Для взаимодействия со стейтами при помощи методов ниже
 
-    def get(self, user_id: int) -> SearchState:
+    def get(self, user_id: int) -> Optional[SearchState]:
         """
         Получить SearchState по user_id
 
         :param user_id: айди пользователя
         :return: SearchState
         """
+        if user_id not in self.__search_states:
+            return None
+
+        self.__search_states.move_to_end(user_id)
         return self.__search_states[user_id]
 
     def create(self, user_id: int) -> None:
@@ -45,6 +51,10 @@ class SearchStateManager:
         """
 
         self.__search_states[user_id] = SearchState()
+        self.__search_states.move_to_end(user_id)
+
+        if len(self.__search_states) > self.__capacity:
+            self.__search_states.popitem(last=False)
 
     def remove(self, user_id: int) -> None:
         """

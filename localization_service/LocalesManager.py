@@ -1,4 +1,4 @@
-from typing import Dict
+from collections import OrderedDict
 
 from api.APIService import APIService
 from localization_service.types import Locale
@@ -24,7 +24,8 @@ class LanguageManager:
             self.__init(*args, **kwargs)
 
     def __init(self, *args, **kwargs):
-        self.__locales: Dict[int, Locale] = {}  # TODO: Замени на hashmap с заданным размером
+        self.__capacity = 32676
+        self.__locales: OrderedDict[int, Locale] = OrderedDict()
 
     async def get_locale(self, user_id: int) -> Locale:
         """
@@ -34,6 +35,7 @@ class LanguageManager:
         :return: Locale
         """
         locale = self.__locales.get(user_id)
+        self.__locales.move_to_end(user_id)
 
         if locale is None:
             user = await APIService().get_user(user_id)
@@ -49,5 +51,8 @@ class LanguageManager:
                     locale = Locale.EN
 
             self.__locales[user_id] = locale
+
+            if len(self.__locales) > self.__capacity:
+                self.__locales.popitem(last=False)
 
         return locale
