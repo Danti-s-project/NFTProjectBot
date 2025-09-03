@@ -126,7 +126,29 @@ ipython_config.py
 
 # PEP 582; used by e.g. github.com/David-OConnor/pyflow and github.com/pdm-project/pdm
 __pypackages__/
+# Python cache files
+__pycache__/
+*.py[cod]
+*$py.class
 
+# Virtual environment
+venv/
+env/
+.env
+
+# Logs
+logs/
+*.log
+
+# IDE files
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS specific files
+.DS_Store
+Thumbs.db
 # Celery stuff
 celerybeat-schedule
 celerybeat.pid

@@ -8,6 +8,7 @@
 
 
 import os
+import logging
 from typing import TypeVar, Type, Optional
 
 import aiohttp
@@ -24,6 +25,7 @@ from api.models import (PaginationAPIReponse,
 from api.types import REQUEST_TYPE
 
 T = TypeVar('T')
+logger = logging.getLogger('APIService')
 
 # TODO: Сделать так, чтобы хранилась не ссылка на пагинацию а оффсеты и лимиты
 
@@ -76,6 +78,8 @@ class APIService:
         :return: aiohttp.ClientResponse или None в случае ошибки
         """
 
+        logger.info(f"Отправлен запрос, request type: {request_type.value}, url: {url}, body: {json}, other ags: {kwargs}")
+
         try:
 
             if request_type == REQUEST_TYPE.GET:
@@ -95,7 +99,9 @@ class APIService:
                     return response
 
         except aiohttp.ClientError as e:
-            # TODO: Добавить логирование
+            logger.error(f"Ошибка при отправке запроса: {type(e)} {e.args}, информация по запросу: \
+             request type: {request_type.value}, url: {url}, body: {json}, other ags: {kwargs}")
+
             raise e
 
     async def endpoint_with_pagination_request(self, url, model: Type[T]) -> PaginationAPIReponse[T]:
@@ -187,6 +193,7 @@ class APIService:
             f"{APIService.HOST}/api/v1/users/{user_id}")
 
         if response.status == 404:
+            logger.warning(f"Попытка получить пользователя {user_id}, завершилась ошибкой 404")
             return None
 
         json_data = await response.json()
@@ -265,3 +272,4 @@ class APIService:
         :return: None
         """
         await self.__session.close()
+        logger.warning("Сессия успешно закрыта!")

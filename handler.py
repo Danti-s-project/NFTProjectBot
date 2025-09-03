@@ -2,6 +2,7 @@
 Здесь все хендлеры команд бота
 """
 
+import logging
 from aiogram.filters.command import CommandStart, CommandObject,  Command
 from aiogram.types import Message, CallbackQuery
 
@@ -14,6 +15,8 @@ from routers.callback_query_routers.SearchMenuBackButtonCallbackQueryRouter impo
 from callbacks.search_callbacks import ChoiceCollection, ShowCollectionsPage, Back
 from main import dp
 
+logger = logging.getLogger('handler')
+
 
 @dp.message(CommandStart(deep_link=True))
 async def start_command_handler(message: Message, command: CommandObject) -> None:
@@ -24,6 +27,7 @@ async def start_command_handler(message: Message, command: CommandObject) -> Non
     :param command: Объект команды (нужен для реферальной системы
     :return: None
     """
+    logger.info(f"Пользователь {message.from_user.id} использовал команду /start")
 
     router = StartRouter(message, command)
     await router.route()
@@ -38,6 +42,7 @@ async def search_command_handler(message: Message) -> None:
     :param message: aiogram.types.Message
     :return: None
     """
+    logger.info(f"Пользователь {message.from_user.id} использовал команду /search")
 
     router = SearchRouter(message)
     await router.route()
@@ -52,6 +57,8 @@ async def select_collection_handler(callback_query: CallbackQuery) -> None:
     :return: None
     """
 
+    logger.info(f"Пользователь {callback_query.from_user.id} выбрал коллекцию в /search")
+
     router = ChoiceCollectionCallbackQueryRouter(callback_query)
     await router.route()
 
@@ -65,6 +72,8 @@ async def show_collections_page_callback_query_handler(callback_query: CallbackQ
     :return: None
     """
 
+    logger.info(f"Пользователь {callback_query.from_user.id} листает список коллекций в /search")
+
     router = ShowCollectionsPageCallbackQueryRouter(callback_query)
     await router.route()
 
@@ -77,6 +86,9 @@ async def action_in_search_menu_callback_query_handler(callback_query: CallbackQ
     :param callback_query: aiogram.types.CallbackQuery
     :return: None
     """
+
+    logger.info(f"Пользователь {callback_query.from_user.id} нажал кнопку в главном меню /search")
+
     router = SearchMenuActionCallbackQueryRouter(callback_query)
     await router.route()
 
@@ -89,6 +101,8 @@ async def search_menu_back_button_callback_query_handler(callback_query: Callbac
     :param callback_query: aiogram.types.CallbackQuery
     :return: None
     """
+
+    logger.info(f"Пользователь {callback_query.from_user.id} нажал кнопку назад в /search меню")
 
     router = SearchMenuBackButtonCallbackQueryRouter(callback_query)
     await router.route()

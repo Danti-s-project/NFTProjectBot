@@ -1,7 +1,12 @@
+import logging
 from collections import OrderedDict
 
 from api.APIService import APIService
 from localization_service.types import Locale
+
+
+logger = logging.getLogger('LocalesManager')
+
 
 class LanguageManager:
     """
@@ -26,6 +31,7 @@ class LanguageManager:
     def __init(self, *args, **kwargs):
         self.__capacity = 32676
         self.__locales: OrderedDict[int, Locale] = OrderedDict()
+        logger.info("LocalesManager был инициализирован")
 
     async def get_locale(self, user_id: int) -> Locale:
         """
@@ -48,11 +54,13 @@ class LanguageManager:
                 case "zh":
                     locale = Locale.ZH
                 case _:
+                    logger.error(f"Запрошен неизвестный код языка - {language}")
                     locale = Locale.EN
 
             self.__locales[user_id] = locale
 
             if len(self.__locales) > self.__capacity:
+                logger.debug("LRU cache overflow, cleaning up old entry")
                 self.__locales.popitem(last=False)
 
         return locale

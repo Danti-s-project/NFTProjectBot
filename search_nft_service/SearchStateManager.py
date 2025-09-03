@@ -1,5 +1,6 @@
 from typing import Optional
 from collections import OrderedDict
+import logging
 
 from search_nft_service.SearchState import SearchState
 
@@ -10,6 +11,7 @@ class SearchStateManager:
     """
 
     _instance = None
+    logger = logging.getLogger('SearchStateManager')
 
     def __new__(cls, *args, **kwargs):
         if not isinstance(cls._instance, cls):
@@ -25,6 +27,7 @@ class SearchStateManager:
     def init(self, *args, **kwargs):
         self.__capacity: int = 32676
         self.__search_states: OrderedDict[int, SearchState] = OrderedDict()
+        self.logger.info(f"Инициализирован SearchStateManager с емкостью {self.__capacity}")
 
     # С __search_states запрещено работать напрямую
     # Для взаимодействия со стейтами при помощи методов ниже
@@ -37,8 +40,10 @@ class SearchStateManager:
         :return: SearchState
         """
         if user_id not in self.__search_states:
+            self.logger.debug(f"SearchState не найден для пользователя {user_id}")
             return None
 
+        self.logger.debug(f"Получен SearchState для пользователя {user_id}")
         self.__search_states.move_to_end(user_id)
         return self.__search_states[user_id]
 
@@ -52,9 +57,11 @@ class SearchStateManager:
 
         self.__search_states[user_id] = SearchState()
         self.__search_states.move_to_end(user_id)
+        self.logger.info(f"Создан новый SearchState для пользователя {user_id}")
 
         if len(self.__search_states) > self.__capacity:
-            self.__search_states.popitem(last=False)
+            removed_user_id, _ = self.__search_states.popitem(last=False)
+            self.logger.warning(f"Превышена емкость кэша. Удален SearchState пользователя {removed_user_id}")
 
     def remove(self, user_id: int) -> None:
         """
@@ -65,3 +72,6 @@ class SearchStateManager:
         """
         if self.__search_states.get(user_id) is not None:
             del self.__search_states[user_id]
+            self.logger.info(f"Удален SearchState пользователя {user_id}")
+        else:
+            self.logger.debug(f"Попытка удаления несуществующего SearchState для пользователя {user_id}")
