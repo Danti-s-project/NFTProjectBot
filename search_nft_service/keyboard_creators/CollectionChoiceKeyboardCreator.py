@@ -1,9 +1,11 @@
 from typing import List
 
-from api.models import Collection
 from abstraction.keyboard.IInlineKeyboard import IInlineKeyboard
 from abstraction.keyboard.InlineKeyboardFactory import InlineKeyboardFactory
+from api.models import Collection
 from callbacks.search_callbacks import ShowCollectionsPage, ChoiceCollection
+from localization_service.i18n import i18n
+from localization_service.types import SystemMessages, Locale
 
 
 class CollectionChoiceKeyboardCreator:
@@ -14,7 +16,7 @@ class CollectionChoiceKeyboardCreator:
 
     ROW_SIZE = 2
 
-    def __init__(self, collections: List[Collection], next_page=None, previous_page=None):
+    def __init__(self, collections: List[Collection], locale: Locale, next_page=None, previous_page=None):
         """
         Конструктор
 
@@ -23,6 +25,7 @@ class CollectionChoiceKeyboardCreator:
         """
 
         self.__collections = collections
+        self.__locale = locale
         self.__next_page = next_page
         self.__previous_page = previous_page
         self.__keyboard = InlineKeyboardFactory.create_keyboard()
@@ -73,13 +76,13 @@ class CollectionChoiceKeyboardCreator:
 
         if self.__previous_page:
             button = InlineKeyboardFactory.create_button()
-            button.set_text("Назад")
+            button.set_text(i18n().get_text(SystemMessages.BACK_BUTTON_TEXT, self.__locale))
             button.set_callback_data(ShowCollectionsPage(direction='previous').pack())
             row.append(button)
 
         if self.__next_page:
             button = InlineKeyboardFactory.create_button()
-            button.set_text("Вперед")
+            button.set_text(i18n().get_text(SystemMessages.FORWARD_BUTTON_TEXT, self.__locale))
             button.set_callback_data(ShowCollectionsPage(direction='next').pack())
             row.append(button)
 

@@ -1,5 +1,6 @@
 from typing import List
 
+from localization_service.LocalesManager import LanguageManager
 from routers.callback_query_routers.BaseCallbackQueryRouter import BaseCallbackQueryRouter
 from search_nft_service.keyboard_creators.CollectionChoiceKeyboardCreator import CollectionChoiceKeyboardCreator
 from search_nft_service.SearchStateManager import SearchStateManager
@@ -24,6 +25,7 @@ class ShowCollectionsPageCallbackQueryRouter(BaseCallbackQueryRouter):
         data = await self.__get_page(url)
         keyboard = CollectionChoiceKeyboardCreator(
             data,
+            await LanguageManager().get_locale(self._callback_query.get_from_user().get_id()),
             next_page=search_state.next_page,
             previous_page=search_state.previous_page
         ).get_keyboard()

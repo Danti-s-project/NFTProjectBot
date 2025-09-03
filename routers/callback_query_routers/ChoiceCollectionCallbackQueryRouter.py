@@ -4,6 +4,9 @@ from callbacks.search_callbacks import ChoiceCollection
 from routers.callback_query_routers.BaseCallbackQueryRouter import BaseCallbackQueryRouter
 from search_nft_service.SearchStateManager import SearchStateManager
 from search_nft_service.keyboard_creators.MainSearchMenuKeyboardMenu import MainSearchMenuKeyboardMenu
+from localization_service.LocalesManager import LanguageManager
+from localization_service.types import SystemMessages, Locale
+from localization_service.i18n import i18n
 
 class ChoiceCollectionCallbackQueryRouter(BaseCallbackQueryRouter):
 
@@ -32,6 +35,10 @@ class ChoiceCollectionCallbackQueryRouter(BaseCallbackQueryRouter):
 
         :return: None
         """
-        keyboard = MainSearchMenuKeyboardMenu().get_keyboard()
-        await self._callback_query.get_message().answer(
-            "Выставите фильтры:", reply_markup=keyboard)
+
+        locale: Locale = await LanguageManager().get_locale(self._callback_query.get_from_user().get_id())
+
+        keyboard = MainSearchMenuKeyboardMenu(locale).get_keyboard()
+
+        message = i18n().get_text(SystemMessages.SET_FILTERS_MESSAGE, locale)
+        await self._callback_query.get_message().answer(message, reply_markup=keyboard)

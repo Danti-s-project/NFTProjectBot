@@ -17,7 +17,7 @@ class IUser(ABC):
         pass
 
     @abstractmethod
-    def get_username(self) -> str:
+    def get_username(self) -> str | None:
         """
         Получить имя пользователя (username)
 

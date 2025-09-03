@@ -2,8 +2,10 @@ from typing import Optional
 
 from abstraction.keyboard.IInlineKeyboard import IInlineKeyboard
 from abstraction.keyboard.InlineKeyboardFactory import InlineKeyboardFactory
-from api.models import PaginationAPIReponse, BaseDataclass
+from api.models import PaginationAPIReponse, BaseNFTDataclass
 from callbacks.search_callbacks import ShowFilterPage, ChoiceFilter, Back
+from localization_service.i18n import i18n
+from localization_service.types import Locale, SystemMessages
 
 
 class FiltersChoiceKeyboardCreator:
@@ -13,13 +15,15 @@ class FiltersChoiceKeyboardCreator:
 
     ROW_SIZE = 2
 
-    def __init__(self, items: PaginationAPIReponse[BaseDataclass],
+    def __init__(self, items: PaginationAPIReponse[BaseNFTDataclass],
                  items_type: str,
+                 locale: Locale,
                  next_page: Optional[str] = None,
                  previous_page: Optional[str] = None):
         self.__keyboard: IInlineKeyboard = InlineKeyboardFactory.create_keyboard()
         self.__items = items
         self.__items_type = items_type
+        self.__locale = locale
         self.__next_page = next_page
         self.__previous_page = previous_page
 
@@ -62,20 +66,14 @@ class FiltersChoiceKeyboardCreator:
 
         if self.__previous_page:
             button = InlineKeyboardFactory.create_button()
-            button.set_text("Назад")
+            button.set_text(i18n().get_text(SystemMessages.BACK_BUTTON_TEXT, self.__locale))
             button.set_callback_data(ShowFilterPage(direction='previous', filter_type=self.__items_type).pack())
             row.append(button)
 
         if self.__next_page:
             button = InlineKeyboardFactory.create_button()
-            button.set_text("Вперед")
+            button.set_text(i18n().get_text(SystemMessages.FORWARD_BUTTON_TEXT, self.__locale))
             button.set_callback_data(ShowFilterPage(direction='next', filter_type=self.__items_type).pack())
             row.append(button)
 
         self.__keyboard.add_buttons_row(row)
-
-        # Добавляем кнопку назад
-        back_button = InlineKeyboardFactory.create_button()
-        back_button.set_text("Назад")
-        back_button.set_callback_data(Back().pack())
-        self.__keyboard.add_buttons_row([back_button])

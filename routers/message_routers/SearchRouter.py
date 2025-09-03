@@ -9,6 +9,9 @@ from abstraction.keyboard.IInlineKeyboard import IInlineKeyboard
 from routers.message_routers.BaseMessageRouter import BaseMessageRouter
 from search_nft_service.SearchStateManager import SearchStateManager
 from search_nft_service.keyboard_creators.CollectionChoiceKeyboardCreator import CollectionChoiceKeyboardCreator
+from localization_service.LocalesManager import LanguageManager
+from localization_service.types import SystemMessages, Locale
+from localization_service.i18n import i18n
 
 
 class SearchRouter(BaseMessageRouter):
@@ -36,9 +39,11 @@ class SearchRouter(BaseMessageRouter):
         """
 
         reply_markup = self.__create_keyboard()
-        await self._message.answer(
-            "Выбери коллекцию подарков которая будет рассматриваться",
-            reply_markup=reply_markup)
+
+        locale = await LanguageManager().get_locale(self._message.get_from_user().get_id())
+        message_text = i18n().get_text(SystemMessages.SELECT_COLLECTION_MESSAGE, locale)
+
+        await self._message.answer(message_text, reply_markup=reply_markup)
 
     async def __create_keyboard(self) -> IInlineKeyboard:
         """
@@ -52,6 +57,7 @@ class SearchRouter(BaseMessageRouter):
 
         keyboard = CollectionChoiceKeyboardCreator(
             nft_collections,
+            await LanguageManager().get_locale(self._message.get_from_user().get_id()),
             next_page=next_page
         ).get_keyboard()
 

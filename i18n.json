@@ -1,0 +1,102 @@
+{
+  "start_message": {
+    "en": "I'm bot",
+    "ru": "Я бот помойник",
+    "zh": ""
+  },
+  "select_collection_message": {
+    "en": "Select collection:",
+    "ru": "Выберите коллекцию:",
+    "zh": ""
+  },
+  "set_filters_message": {
+    "en": "Set filters:",
+    "ru": "Установи фильтры:",
+    "zh": ""
+  },
+  "select_model_message": {
+    "en": "Select model:",
+    "ru": "Выберите модель:",
+    "zh": ""
+  },
+  "select_symbol_message": {
+    "en": "Select symbol:",
+    "ru": "Выберите символ",
+    "zh": ""
+  },
+  "select_backdrop_message": {
+    "en": "Select backdrop:",
+    "ru": "Выберите фон",
+    "zh": ""
+  },
+  "search_result_header_text": {
+    "en": "Find {} NFT's by filters: \\n\\n Collection: {}",
+    "ru": "Найдено {} NFT по запросу: \\n\\n Коллекция: {}",
+    "zh": ""
+  },
+  "search_result_model_text": {
+    "en": "Model: {}",
+    "ru": "Модель: {}",
+    "zh": ""
+  },
+  "search_result_symbol_text": {
+    "en": "Symbol: {}",
+    "ru": "Символ: {}",
+    "zh": ""
+  },
+  "search_result_backdrop_text": {
+    "en": "Backdrop: {}",
+    "ru": "Фон: {}",
+    "zh": ""
+  },
+  "search_result_owner_text": {
+    "en": "Owner: {}",
+    "ru": "Владелец: {}",
+    "zh": ""
+  },
+  "back_button_text": {
+    "en": "Back",
+    "ru": "Назад",
+    "zh": ""
+  },
+  "forward_button_text": {
+    "en": "Forward",
+    "ru": "Вперед",
+    "zh": ""
+  },
+  "select_backdrop_button_text": {
+    "en": "Select backdrop...",
+    "ru": "Выберите фон...",
+    "zh": ""
+  },
+  "select_symbol_button_text": {
+    "en": "Select symbol...",
+    "ru": "Выберите узор...",
+    "zh": ""
+  },
+  "select_model_button_text": {
+    "en": "Select model...",
+    "ru": "Выберите модель...",
+    "zh": ""
+  },
+  "select_backdrop_exists_button_text": {
+    "en": "Backdrop: {}",
+    "ru": "Фон: {}",
+    "zh": ""
+  },
+  "select_symbol_exists_button_text": {
+    "en": "Symbol: {}",
+    "ru": "Символ: {}",
+    "zh": ""
+  },
+  "select_model_exists_button_text": {
+    "en": "Model: {}",
+    "ru": "Модель: {}",
+    "zh": ""
+  },
+  "search_button_text": {
+    "en": "Search...",
+    "ru": "Поиск...",
+    "zh": ""
+  }
+}

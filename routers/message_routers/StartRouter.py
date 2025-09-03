@@ -2,9 +2,11 @@ import os
 
 from aiogram.filters import CommandObject
 
-from routers.message_routers.BaseMessageRouter import BaseMessageRouter
 from api.APIService import APIService
-from api.models import User
+from routers.message_routers.BaseMessageRouter import BaseMessageRouter
+from localization_service.LocalesManager import LanguageManager
+from localization_service.types import SystemMessages, Locale
+from localization_service.i18n import i18n
 
 
 class StartRouter(BaseMessageRouter):
@@ -57,7 +59,10 @@ class StartRouter(BaseMessageRouter):
         return bool(await APIService().get_user(user_id))
 
     async def __send_hello_message(self) -> None:
-        await self._message.answer("Привет, я бот помойникэ")
+        locale = await LanguageManager().get_locale(self._message.get_from_user().get_id())
+        message = i18n().get_text(SystemMessages.START_MESSAGE, locale)
+
+        await self._message.answer(message)
 
     async def __create_user(self) -> None:
         """

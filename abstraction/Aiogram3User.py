@@ -26,7 +26,7 @@ class Aiogram3User(IUser):
         """
         return self._user.id
 
-    def get_username(self) -> str:
+    def get_username(self) -> str | None:
         """
         Получить имя пользователя (username)
 
@@ -44,7 +44,7 @@ class Aiogram3User(IUser):
         """
         return self._user.full_name
 
-            def get_language_code(self) -> str | None:
+    def get_language_code(self) -> str | None:
         """
         Получить код языка пользователя
 

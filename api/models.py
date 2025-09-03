@@ -89,5 +89,3 @@ class PaginationAPIReponse(Generic[T]):
 @dataclass
 class NFTSAPIResponse:
     result: List[NFT]
-    
-

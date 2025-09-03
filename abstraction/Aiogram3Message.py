@@ -49,7 +49,7 @@ class Aiogram3MessageAdapter(IMessageAdapter):
         """
         return Aiogram3User(self._message.from_user)
 
-            async def answer(self, text: str, reply_markup: IInlineKeyboard = None) -> None:
+    async def answer(self, text: str, reply_markup: IInlineKeyboard = None) -> None:
         """
         Отправить ответ на сообщение пользователя
 
