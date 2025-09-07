@@ -1,4 +1,5 @@
 import os
+import typing
 
 from aiogram.filters import CommandObject
 
@@ -17,7 +18,7 @@ class StartRouter(BaseMessageRouter):
     HOST = os.getenv("HOST")
     USERS_PATH = "api/v1/users/"
 
-    def __init__(self, message, command: CommandObject):
+    def __init__(self, message, command: typing.Optional[CommandObject] = None):
         """
         Конструктор роутера для команды /start
         Используется дополнительный параметр command для создания реферальных ссылок.
@@ -37,11 +38,12 @@ class StartRouter(BaseMessageRouter):
         :return: None
         """
 
+        # Если пользователь уже регистрировался
         if await self.__user_exists(self._message.get_from_user().get_id()):
             await self.__send_hello_message()
             return
 
-        if self.__command.args:
+        if self.__command:
             await self.create_user_with_ref_code()
         else:
             await self.__create_user()

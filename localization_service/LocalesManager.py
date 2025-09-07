@@ -41,10 +41,17 @@ class LanguageManager:
         :return: Locale
         """
         locale = self.__locales.get(user_id)
-        self.__locales.move_to_end(user_id)
+        
+        if locale:
+            self.__locales.move_to_end(user_id)
 
-        if locale is None:
+        else:
             user = await APIService().get_user(user_id)
+
+            if not user:
+                logger.critical("user object is None, exiting the program. Please check your API service!")
+                raise Exception("User object is None, exiting the program. Please check your API service!")
+
             language = user.language
             match language:
                 case "ru":

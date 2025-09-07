@@ -9,7 +9,7 @@ class i18n:
     Singleton, инициализируйте инстанс этого класса перед запуском бота
     """
 
-    LOCALES_FILE_PATH = "i18.json"
+    LOCALES_FILE_PATH = "i18n.json"
 
     _instance = None
 
@@ -42,5 +42,5 @@ class i18n:
         :return: Текст сообщения на нужном языке
         """
 
-        message_localizations = self.__locales[locale.value]
-        return message_localizations[message.value].format(*args)
+        message_localizations = self.__locales[message.value][locale.value]
+        return message_localizations.format(*args)

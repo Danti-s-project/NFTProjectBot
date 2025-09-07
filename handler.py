@@ -13,10 +13,12 @@ from routers.callback_query_routers.ShowCollectionsPageCallbackQueryRouter impor
 from routers.callback_query_routers.SearchMenuActionCallbackQueryRouter import SearchMenuActionCallbackQueryRouter
 from routers.callback_query_routers.SearchMenuBackButtonCallbackQueryRouter import SearchMenuBackButtonCallbackQueryRouter
 from callbacks.search_callbacks import ChoiceCollection, ShowCollectionsPage, Back
-from main import dp
+from dispatcher import dp
 
 logger = logging.getLogger('handler')
 
+# TODO: Сделать start without deep_link
+# Починить локаль, в случае если ее нету
 
 @dp.message(CommandStart(deep_link=True))
 async def start_command_handler(message: Message, command: CommandObject) -> None:

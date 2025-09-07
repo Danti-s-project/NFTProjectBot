@@ -12,6 +12,8 @@ import logging
 from typing import TypeVar, Type, Optional
 
 import aiohttp
+import dotenv
+from aiohttp import ClientSession
 
 from api.models import (PaginationAPIReponse,
                         Collection,
@@ -24,8 +26,12 @@ from api.models import (PaginationAPIReponse,
                         User)
 from api.types import REQUEST_TYPE
 
-T = TypeVar('T')
+dotenv.load_dotenv()
+
 logger = logging.getLogger('APIService')
+
+
+T = TypeVar('T')
 
 # TODO: Сделать так, чтобы хранилась не ссылка на пагинацию а оффсеты и лимиты
 
@@ -38,6 +44,38 @@ class APIService:
     HOST = os.getenv('HOST')
 
     _instance = None
+
+
+    class Response:
+        """
+        Адаптер для aiohttp.ClientSession
+        Нужен для хранения информации о запросе после закрытия aiohttp.ClientSession
+        Должен повторять интерфейс aiohttp.ClientResponse. Реализуйте методы по мере надобности
+        """
+
+        def __init__(self, status: int, json: dict):
+            self.__status = status
+            self.__json = json
+
+        @property
+        def status(self) -> int:
+            """
+            Статус ответа
+
+            :return: Статус (INT)
+            """
+
+            return self.__status
+
+        async def json(self) -> dict:
+            """
+            метод json в aiohttp.ClientResponse - асинхронныый.
+            Сделаю его асинхронным и здесь, чтобы не нарушать совместимости
+
+            :return: тело ответа
+            """
+
+            return self.__json
 
     def __new__(cls, *args, **kwargs):
         if not isinstance(cls._instance, cls):
@@ -56,7 +94,39 @@ class APIService:
 
         :return: None
         """
-        self.__session: aiohttp.ClientSession = aiohttp.ClientSession()
+        self.__session: Optional[aiohttp.ClientSession] = None
+
+    async def get_session(self) -> aiohttp.ClientSession:
+        """
+        Получить старый или создать новый объект ClientSession
+
+        :return: aiohttp.ClientSession
+        """
+
+        # TODO: Пошамань с параметрами
+
+        if self.__session is None or self.__session.closed:
+            self.__session = aiohttp.ClientSession(
+                base_url=APIService.HOST,
+                connector=aiohttp.TCPConnector(
+                    limit=100,
+                    keepalive_timeout=30,
+                    force_close=False,
+                    enable_cleanup_closed=True
+                ),
+                timeout=aiohttp.ClientTimeout(
+                    total=60,
+                    connect=30,
+                    sock_connect=30,
+                    sock_read=30
+                ),
+                headers={
+                    'Accept': 'application/json',
+                    'Connection': 'keep-alive'
+                }
+            )
+
+        return self.__session
 
     async def __make_request(
             self,
@@ -64,7 +134,7 @@ class APIService:
             url: str,
             json=None,
             **kwargs
-    ) -> Optional[aiohttp.ClientResponse]:
+    ) -> Optional[Response]:
 
         """
         Общий метод для отправки запросов к API
@@ -78,31 +148,44 @@ class APIService:
         :return: aiohttp.ClientResponse или None в случае ошибки
         """
 
-        logger.info(f"Отправлен запрос, request type: {request_type.value}, url: {url}, body: {json}, other ags: {kwargs}")
+        logger.info(f"Отправлен запрос, request type: {request_type}, url: {url}, body: {json}, other ags: {kwargs}")
+
+        # Инициализируем вне try-except блока, для finally
+        response: Optional[aiohttp.ClientResponse] = None
 
         try:
+            # Получаем сессию
+            session: ClientSession = await self.get_session()
 
+            # Отправляем запрос в зависимости от его метода
             if request_type == REQUEST_TYPE.GET:
-                async with self.__session.get(url, **kwargs) as response:
-                    return response
+                response = await session.get(url, **kwargs)
             elif request_type == REQUEST_TYPE.POST:
-                async with self.__session.post(url, json=json, **kwargs) as response:
-                    return response
+                response = await session.post(url, json=json, **kwargs)
             elif request_type == REQUEST_TYPE.PUT:
-                async with self.__session.put(url, json=json, **kwargs) as response:
-                    return response
+                response = await session.put(url, json=json, **kwargs)
             elif request_type == REQUEST_TYPE.DELETE:
-                async with self.__session.delete(url, **kwargs) as response:
-                    return response
+                response = await session.delete(url, **kwargs)
             elif request_type == REQUEST_TYPE.PATCH:
-                async with self.__session.patch(url, json=json, **kwargs) as response:
-                    return response
+                response = await session.patch(url, json=json, **kwargs)
+
+            if response is not None:
+                # Заворачиваем в адаптер
+                result = APIService.Response(response.status, await response.json())
+
+                logger.info(f'request to url {url} with args {json}, {kwargs} response status: {result.status}')
+                return result
 
         except aiohttp.ClientError as e:
             logger.error(f"Ошибка при отправке запроса: {type(e)} {e.args}, информация по запросу: \
              request type: {request_type.value}, url: {url}, body: {json}, other ags: {kwargs}")
 
             raise e
+
+        finally:
+            # Закрываем соединение
+            if response is not None:
+                response.close()
 
     async def endpoint_with_pagination_request(self, url, model: Type[T]) -> PaginationAPIReponse[T]:
         """
