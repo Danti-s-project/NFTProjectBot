@@ -118,5 +118,25 @@
     "en": "Settings",
     "ru": "Настройки",
     "zh": ""
+  },
+  "settings_message": {
+    "en": "What do you want to set up?",
+    "ru": "Что желаете настройть?",
+    "zh": ""
+  },
+  "language_button_text": {
+    "en": "Language",
+    "ru": "Язык",
+    "zh": ""
+  },
+  "please_select_language": {
+    "en": "Please, select language",
+    "ru": "Пожалуйста, выберите язык.",
+    "zh": ""
+  },
+  "language_successful_changed": {
+    "en": "Language successful changed!",
+    "ru": "Язык успешно изменен",
+    "zh": ""
   }
 }

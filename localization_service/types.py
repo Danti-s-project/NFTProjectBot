@@ -35,4 +35,7 @@ class SystemMessages(str, enum.Enum):
     PROFILE_SUBSCRIBE_ACTIVE_STATUS = "subscribe_active_status"
     PROFILE_SUBSCRIBE_INACTIVE_STATUS = "subscribe_inactive_status"
     SETTINGS_BUTTON_TEXT = "settings_button_text"
-
+    SETTINGS_MESSAGE = "settings_message"
+    LANGUAGE_BUTTON_TEXT = "language_button_text"
+    PLEASE_SELECT_LANGUAGE_TEXT = "please_select_language"
+    LANGUAGE_SUCCESSFUL_CHANGED = "language_successful_changed"

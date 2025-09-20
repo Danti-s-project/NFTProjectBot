@@ -7,3 +7,19 @@ class ProfileAction(CallbackData, prefix="profile_action"):
     """
 
     action: str
+
+
+class SettingsAction(CallbackData, prefix="profile_settings_action"):
+    """
+    Нажатие кнопки в настройках
+    """
+
+    action: str
+
+
+class SelectLanguage(CallbackData, prefix="profile_select_language"):
+    """
+    Выбор языка в настройках языка
+    """
+
+    language: str

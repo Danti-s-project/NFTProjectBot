@@ -14,8 +14,12 @@ from routers.callback_query_routers.ShowCollectionsPageCallbackQueryRouter impor
 from routers.callback_query_routers.SearchMenuActionCallbackQueryRouter import SearchMenuActionCallbackQueryRouter
 from routers.callback_query_routers.SearchMenuBackButtonCallbackQueryRouter import SearchMenuBackButtonCallbackQueryRouter
 from routers.callback_query_routers.ChoiceFilterCallbackQueryRouter import ChoiceFilterCallbackQueryRouter
+from routers.callback_query_routers.SelectLanguageCallbackQueryRouter import SelectLanguageCallbackQueryRouter
 from routers.message_routers.ProfileRouter import ProfileRouter
+from routers.callback_query_routers.SettingsActionCallbackQueryRouter import SettingsActionCallbackQueryRouter
+from routers.callback_query_routers.ProfileActoinCallbackQueryRouter import ProfileActionCallbackQueryRouter
 from callbacks.search_callbacks import ChoiceCollection, ShowCollectionsPage, Back, Action, ChoiceFilter
+from callbacks.profile_callbacks import ProfileAction, SettingsAction, SelectLanguage
 from dispatcher import dp
 
 logger = logging.getLogger('handler')
@@ -157,4 +161,49 @@ async def profile_command_handler(message: Message) -> None:
     logger.info(f"Пользователь {message.from_user.id} использовал команду /profile")
 
     router = ProfileRouter(message)
+    await router.route()
+
+
+@dp.callback_query(ProfileAction.filter())
+async def profile_action_callback_query_handler(callback_query: CallbackQuery) -> None:
+    """
+    Срабатывает при нажатии кнопки в главном меню profile
+
+    :param callback_query: aiogram.types.CallbackQuery
+    :return: None
+    """
+
+    logger.info(f"Пользователь {callback_query.from_user.id} нажал кнопку в меню /profile")
+
+    router = ProfileActionCallbackQueryRouter(callback_query)
+    await router.route()
+
+
+@dp.callback_query(SettingsAction.filter())
+async def settings_action_callback_query_handler(callback_query: CallbackQuery) -> None:
+    """
+    Срабатывает при нажатии кнопки в главном меню настроек
+
+    :param callback_query: aiogram.types.CallbackQuery
+    :return: None
+    """
+
+    logger.info(f"Пользователь {callback_query.from_user.id} нажал кнопку в меню настроек")
+
+    router = SettingsActionCallbackQueryRouter(callback_query)
+    await router.route()
+
+
+@dp.callback_query(SelectLanguage.filter())
+async def select_language_callback_query_handler(callback_query: CallbackQuery) -> None:
+    """
+    Срабатывает при нажатии кнопки в меню выбора языка
+
+    :param callback_query: aiogram.types.CallbackQuery
+    :return: None
+    """
+
+    logger.info(f"Пользователь {callback_query.from_user.id} нажал кнопку в меню выбора языка")
+
+    router = SelectLanguageCallbackQueryRouter(callback_query)
     await router.route()

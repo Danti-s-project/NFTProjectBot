@@ -295,6 +295,21 @@ class APIService:
             f'{APIService.HOST}/api/v1/users/',
             json=json)
 
+    async def update_user(self, user_id: int, **kwargs) -> None:
+        """
+        Обновить пользователя
+
+        :param user_id: user_id
+        :param kwargs: Данные которые нужно обновить
+        :return: None
+        """
+
+        await self.__make_request(
+            REQUEST_TYPE.POST,
+        f'{APIService.HOST}/api/v1/users/{user_id}/',
+            json=kwargs
+        )
+
     async def get_nfts(
             self,
             collection: Collection,

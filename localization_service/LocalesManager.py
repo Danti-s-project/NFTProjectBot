@@ -71,3 +71,25 @@ class LocalesManager:
                 self.__locales.popitem(last=False)
 
         return locale
+
+    def set_locale(self, user_id: int, language: str) -> None:
+        """
+        Обновить язык в кеше
+
+        :param user_id: айди пользователя
+        :param locale: Код языка. Строка
+        :return:
+        """
+
+        match language:
+            case "ru":
+                locale = Locale.RU
+            case "en":
+                locale = Locale.EN
+            case "zh":
+                locale = Locale.ZH
+            case _:
+                logger.error(f"Запрошен неизвестный код языка - {language}")
+                locale = Locale.EN
+
+        self.__locales[user_id] = locale
