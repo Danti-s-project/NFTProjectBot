@@ -1,4 +1,7 @@
 import os
+import typing
+
+from aiogram.filters import CommandObject
 
 from api.APIService import APIService
 from localization_service.LocalesManager import LocalesManager
@@ -7,7 +10,7 @@ from localization_service.types import SystemMessages
 from routers.message_routers.BaseMessageRouter import BaseMessageRouter
 
 
-class StartRouter(BaseMessageRouter):
+class StartRouterWithDeepLink(BaseMessageRouter):
     """
     Роутер для команды /start
     """
@@ -15,14 +18,18 @@ class StartRouter(BaseMessageRouter):
     HOST = os.getenv("HOST")
     USERS_PATH = "api/v1/users/"
 
-    def __init__(self, message):
+    def __init__(self, message, command: typing.Optional[CommandObject] = None):
         """
-        Конструктор роутера для команды /start
+        Конструктор роутера для команды /start с deep_link
+        Используется дополнительный параметр command для создания реферальных ссылок.
         По возможности исключите прямое взаимодействие с API
 
         :param message: aiogram.types.Message
+        :param command: aiogram.filter.CommandStart
         """
         super().__init__(message)
+
+        self.__command: CommandObject = command
 
     async def route(self) -> None:
         """
@@ -36,7 +43,11 @@ class StartRouter(BaseMessageRouter):
             await self.__send_hello_message()
             return
 
-        await self.__create_user()
+        if self.__command:
+            await self.create_user_with_ref_code()
+        else:
+            await self.__create_user()
+
         await self.__send_hello_message()
 
     async def __user_exists(self, user_id: int) -> bool:
@@ -70,3 +81,31 @@ class StartRouter(BaseMessageRouter):
         }
 
         await APIService().create_user(request_json)
+
+    async def create_user_with_ref_code(self) -> None:
+        """
+        Создать на сервере пользователя присоединившегося по реферальной ссылке
+
+        :return: None
+        """
+
+        # Валидаця рефки
+        ref_is_digit: bool = self.__command.args.isdigit()
+        user_exists: bool = await self.__user_exists(int(self.__command.args))
+
+        # если рефка не валидна, создаем юзера без рефки
+        if not ref_is_digit or not user_exists:
+            await self.__create_user()
+            return
+
+        # формируем и отправляем запрос
+        request_json = {
+            "user_id": self._message.get_from_user().get_id(),
+            "username": self._message.get_from_user().get_username(),
+            "fullname": self._message.get_from_user().get_full_name(),
+            "language": self._message.get_from_user().get_language_code(),
+            "ref_user": int(self.__command.args)
+        }
+
+        await APIService().create_user(request_json)
+

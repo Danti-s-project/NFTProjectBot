@@ -30,3 +30,9 @@ class SystemMessages(str, enum.Enum):
     SELECT_SYMBOL_EXISTS_BUTTON_TEXT = "select_symbol_button_text"
     SELECT_MODEL_EXISTS_BUTTON_TEXT = "select_model_button_text"
     SEARCH_BUTTON_TEXT = "search_button_text"
+
+    PROFILE_MESSAGE = "profile_message"
+    PROFILE_SUBSCRIBE_ACTIVE_STATUS = "subscribe_active_status"
+    PROFILE_SUBSCRIBE_INACTIVE_STATUS = "subscribe_inactive_status"
+    SETTINGS_BUTTON_TEXT = "settings_button_text"
+

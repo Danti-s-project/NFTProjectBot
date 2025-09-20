@@ -2,7 +2,7 @@ import asyncio
 
 
 from api.APIService import APIService
-from localization_service.LocalesManager import LanguageManager
+from localization_service.LocalesManager import LocalesManager
 from localization_service.i18n import i18n
 from search_nft_service.SearchStateManager import SearchStateManager
 from utils.logging_setup import setup_logger
@@ -20,7 +20,7 @@ async def main():
     SearchStateManager()
 
     i18n()
-    LanguageManager()
+    LocalesManager()
 
     logger.info("Все сервисы инициализированы")
 

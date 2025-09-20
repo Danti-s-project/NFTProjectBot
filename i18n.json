@@ -30,8 +30,8 @@
     "zh": ""
   },
   "search_result_header_text": {
-    "en": "Find {} NFT's by filters: \\n\\n Collection: {}",
-    "ru": "Найдено {} NFT по запросу: \\n\\n Коллекция: {}",
+    "en": "Find {} NFT's by filters: \n\n Collection: {}",
+    "ru": "Найдено {} NFT по запросу: \n\n Коллекция: {}",
     "zh": ""
   },
   "search_result_model_text": {
@@ -97,6 +97,26 @@
   "search_button_text": {
     "en": "Search...",
     "ru": "Поиск...",
+    "zh": ""
+  },
+  "profile_message": {
+    "en": "User profile of {}:\nRegistration date: {}\nLanguage: {}\nPremium: {}\nBalance: {}",
+    "ru": "Профиль пользователя {}:\nДата регистрации: {}\nЯзык: {}\nПремиум подписка: {}\nБаланс: {}",
+    "zh": ""
+  },
+  "subscribe_inactive_status": {
+    "en": "Inactive",
+    "ru":"Неактивна",
+    "zh": ""
+  },
+  "subscribe_active_status": {
+    "en": "Active",
+    "ru": "Активна",
+    "zh": ""
+  },
+  "settings_button_text": {
+    "en": "Settings",
+    "ru": "Настройки",
     "zh": ""
   }
 }

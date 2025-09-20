@@ -9,7 +9,7 @@ from abstraction.keyboard.IInlineKeyboard import IInlineKeyboard
 from routers.message_routers.BaseMessageRouter import BaseMessageRouter
 from search_nft_service.SearchStateManager import SearchStateManager
 from search_nft_service.keyboard_creators.CollectionChoiceKeyboardCreator import CollectionChoiceKeyboardCreator
-from localization_service.LocalesManager import LanguageManager
+from localization_service.LocalesManager import LocalesManager
 from localization_service.types import SystemMessages, Locale
 from localization_service.i18n import i18n
 
@@ -20,7 +20,7 @@ class SearchRouter(BaseMessageRouter):
     """
 
     HOST = os.getenv("HOST")
-    COLLECTIONS_PATH = "api/v1/collections/"
+    COLLECTIONS_PATH = "/api/v1/collections/"
     ELEMENTS_IN_PAGE = 2
 
     def __init__(self, message: Message):
@@ -29,8 +29,11 @@ class SearchRouter(BaseMessageRouter):
     async def route(self) -> None:
         user_id = self._message.get_from_user().get_id()
 
+        # Удалить пользователя если он существует, иначе ничего не произойдет
         SearchStateManager().remove(user_id)
         SearchStateManager().create(user_id)
+
+        await self.__send_search_message()
 
     async def __send_search_message(self) -> None:
         """
@@ -38,9 +41,9 @@ class SearchRouter(BaseMessageRouter):
         :return:
         """
 
-        reply_markup = self.__create_keyboard()
+        reply_markup = await self.__create_keyboard()
 
-        locale = await LanguageManager().get_locale(self._message.get_from_user().get_id())
+        locale = await LocalesManager().get_locale(self._message.get_from_user().get_id())
         message_text = i18n().get_text(SystemMessages.SELECT_COLLECTION_MESSAGE, locale)
 
         await self._message.answer(message_text, reply_markup=reply_markup)
@@ -57,7 +60,7 @@ class SearchRouter(BaseMessageRouter):
 
         keyboard = CollectionChoiceKeyboardCreator(
             nft_collections,
-            await LanguageManager().get_locale(self._message.get_from_user().get_id()),
+            await LocalesManager().get_locale(self._message.get_from_user().get_id()),
             next_page=next_page
         ).get_keyboard()
 
@@ -70,7 +73,7 @@ class SearchRouter(BaseMessageRouter):
         :return:
         """
         response = await APIService().get_collections(
-            f"{SearchRouter.HOST}{SearchRouter}?limit={SearchRouter.ELEMENTS_IN_PAGE}&offset=0"
+            f"{SearchRouter.HOST}{SearchRouter.COLLECTIONS_PATH}?limit={SearchRouter.ELEMENTS_IN_PAGE}&offset=0"
         )
         search_state = SearchStateManager().get(self._message.get_from_user().get_id())
         search_state.next_page = response.next

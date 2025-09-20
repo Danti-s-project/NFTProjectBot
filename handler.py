@@ -8,30 +8,49 @@ from aiogram.types import Message, CallbackQuery
 
 from routers.message_routers.StartRouter import StartRouter
 from routers.message_routers.SearchRouter import SearchRouter
+from routers.message_routers.StartRouterWithDeeplLnk import StartRouterWithDeepLink
 from routers.callback_query_routers.ChoiceCollectionCallbackQueryRouter import ChoiceCollectionCallbackQueryRouter
 from routers.callback_query_routers.ShowCollectionsPageCallbackQueryRouter import ShowCollectionsPageCallbackQueryRouter
 from routers.callback_query_routers.SearchMenuActionCallbackQueryRouter import SearchMenuActionCallbackQueryRouter
 from routers.callback_query_routers.SearchMenuBackButtonCallbackQueryRouter import SearchMenuBackButtonCallbackQueryRouter
-from callbacks.search_callbacks import ChoiceCollection, ShowCollectionsPage, Back
+from routers.callback_query_routers.ChoiceFilterCallbackQueryRouter import ChoiceFilterCallbackQueryRouter
+from routers.message_routers.ProfileRouter import ProfileRouter
+from callbacks.search_callbacks import ChoiceCollection, ShowCollectionsPage, Back, Action, ChoiceFilter
 from dispatcher import dp
 
 logger = logging.getLogger('handler')
 
-# TODO: Сделать start without deep_link
+# TODO: Добавь проверку на то, что чел вводил /start перед тем как использовать команды
+
 # Починить локаль, в случае если ее нету
 
 @dp.message(CommandStart(deep_link=True))
-async def start_command_handler(message: Message, command: CommandObject) -> None:
+async def start_command_with_deeplink_handler(message: Message, command: CommandObject) -> None:
     """
-    Хендлер для команды /start
+    Хендлер для команды /start с реферальной ссылкой
 
     :param message: aiogram Message
     :param command: Объект команды (нужен для реферальной системы
     :return: None
     """
+    logger.info(f"Пользователь {message.from_user.id} использовал команду /start c deep link")
+
+    router = StartRouterWithDeepLink(message, command)
+    await router.route()
+
+
+@dp.message(CommandStart())
+async def start_command_handler(message: Message) -> None:
+    """
+    Хэндлер для команды /start без реферальной ссылки
+
+    :param message: aiogram Message
+    :return: None
+    """
+
     logger.info(f"Пользователь {message.from_user.id} использовал команду /start")
 
-    router = StartRouter(message, command)
+    router = StartRouter(message)
     await router.route()
 
 
@@ -80,7 +99,7 @@ async def show_collections_page_callback_query_handler(callback_query: CallbackQ
     await router.route()
 
 
-@dp.callback_query(ChoiceCollection.filter())
+@dp.callback_query(Action.filter())
 async def action_in_search_menu_callback_query_handler(callback_query: CallbackQuery) -> None:
     """
     Срабатывает при нажатии любой кнопки в главном меню поиска
@@ -107,4 +126,35 @@ async def search_menu_back_button_callback_query_handler(callback_query: Callbac
     logger.info(f"Пользователь {callback_query.from_user.id} нажал кнопку назад в /search меню")
 
     router = SearchMenuBackButtonCallbackQueryRouter(callback_query)
+    await router.route()
+
+
+
+@dp.callback_query(ChoiceFilter.filter())
+async def choice_filter_button_callback_query_handler(callback_query: CallbackQuery) -> None:
+    """
+    Срабатывает при нажатии кнопки выбора фильтра в сервисе /search
+
+    :param callback_query: aiogram.types.CallbackQuery
+    :return: None
+    """
+
+    logger.info(f"Пользователь {callback_query.from_user.id} нажал кнопку выбора одного из фильтров в /search меню")
+
+    router = ChoiceFilterCallbackQueryRouter(callback_query)
+    await router.route()
+
+
+@dp.message(Command("profile"))
+async def profile_command_handler(message: Message) -> None:
+    """
+    Хэндлер для команды /profile
+
+    :param message: aiogram Message
+    :return: None
+    """
+
+    logger.info(f"Пользователь {message.from_user.id} использовал команду /profile")
+
+    router = ProfileRouter(message)
     await router.route()

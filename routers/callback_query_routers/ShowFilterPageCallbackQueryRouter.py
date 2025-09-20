@@ -1,7 +1,7 @@
 from api.APIService import APIService
 from api.models import BaseNFTDataclass, PaginationAPIReponse
 from callbacks.search_callbacks import ShowFilterPage
-from localization_service.LocalesManager import LanguageManager
+from localization_service.LocalesManager import LocalesManager
 from routers.callback_query_routers.BaseCallbackQueryRouter import BaseCallbackQueryRouter
 from search_nft_service.SearchStateManager import SearchStateManager
 from search_nft_service.keyboard_creators.FiltersChoiceKeyboardCreate import FiltersChoiceKeyboardCreator
@@ -25,7 +25,7 @@ class ShowFilterPageCallbackQueryRouter(BaseCallbackQueryRouter):
         keyboard = FiltersChoiceKeyboardCreator(
             data,
             callback_data.filter_type,
-            await LanguageManager().get_locale(self._callback_query.get_from_user().get_id()),
+            await LocalesManager().get_locale(self._callback_query.get_from_user().get_id()),
             next_page=search_state.next_page,
             previous_page=search_state.previous_page
         ).get_keyboard()

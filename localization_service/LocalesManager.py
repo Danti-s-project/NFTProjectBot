@@ -8,7 +8,7 @@ from localization_service.types import Locale
 logger = logging.getLogger('LocalesManager')
 
 
-class LanguageManager:
+class LocalesManager:
     """
     Менеджер, кеширующий язык интерфейса пользователя в оперативной памяти,
     А также, предоставляющий интерфейс для работы с локалями
@@ -19,7 +19,7 @@ class LanguageManager:
 
     def __new__(cls, *args, **kwargs):
         if not isinstance(cls._instance, cls):
-            cls._instance = super(LanguageManager, cls).__new__(cls, *args, **kwargs)
+            cls._instance = super(LocalesManager, cls).__new__(cls, *args, **kwargs)
             cls._initialized = False
         return cls._instance
 

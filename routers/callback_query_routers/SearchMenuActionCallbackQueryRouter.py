@@ -8,7 +8,7 @@ from callbacks.search_callbacks import Action, Back
 from routers.callback_query_routers.BaseCallbackQueryRouter import BaseCallbackQueryRouter
 from search_nft_service.SearchStateManager import SearchStateManager
 from search_nft_service.keyboard_creators.FiltersChoiceKeyboardCreate import FiltersChoiceKeyboardCreator
-from localization_service.LocalesManager import LanguageManager
+from localization_service.LocalesManager import LocalesManager
 from localization_service.types import SystemMessages, Locale
 from localization_service.i18n import i18n
 
@@ -50,7 +50,7 @@ class SearchMenuActionCallbackQueryRouter(BaseCallbackQueryRouter):
             symbol=search_state.symbol
         )
 
-        locale = await LanguageManager().get_locale(self._callback_query.get_from_user().get_id())
+        locale = await LocalesManager().get_locale(self._callback_query.get_from_user().get_id())
 
         message = i18n().get_text(
             SystemMessages.SEARCH_RESULT_HEADER_TEXT,
@@ -62,19 +62,19 @@ class SearchMenuActionCallbackQueryRouter(BaseCallbackQueryRouter):
             message += f"{i18n().get_text(
                 SystemMessages.SEARCH_RESULT_MODEL_TEXT,
                 locale,
-                search_state.model)}\n"
+                search_state.model.name)}\n"
 
         if search_state.backdrop:
             message += f"{i18n().get_text(
                 SystemMessages.SEARCH_RESULT_BACKDROP_TEXT,
                 locale,
-                search_state.backdrop)}\n"
+                search_state.backdrop.name)}\n"
 
         if search_state.symbol:
             message += f"{i18n().get_text(
                 SystemMessages.SEARCH_RESULT_SYMBOL_TEXT,
                 locale,
-                search_state.symbol)}\n"
+                search_state.symbol.name)}\n"
 
         message += "\n\n"
 
@@ -84,17 +84,17 @@ class SearchMenuActionCallbackQueryRouter(BaseCallbackQueryRouter):
                  f"{i18n().get_text(
                 SystemMessages.SEARCH_RESULT_MODEL_TEXT,
                 locale,
-                item.model)}\n"
+                item.model.name)}\n"
                  
                  f"{i18n().get_text(
                 SystemMessages.SEARCH_RESULT_SYMBOL_TEXT,
                 locale,
-                item.symbol)}\n"
+                item.symbol.name)}\n"
                  
                  f"{i18n().get_text(
                 SystemMessages.SEARCH_RESULT_BACKDROP_TEXT,
                 locale,
-                item.backdrop)}\n"
+                item.backdrop.name)}\n"
                  )
 
             if item.owner:
@@ -125,23 +125,21 @@ class SearchMenuActionCallbackQueryRouter(BaseCallbackQueryRouter):
         :return: None
         """
 
-        locale: Locale = await LanguageManager().get_locale(self._callback_query.get_from_user().get_id())
+        locale: Locale = await LocalesManager().get_locale(self._callback_query.get_from_user().get_id())
 
         # Получаем нужные данные для формирования сообщений
         search_state = SearchStateManager().get(self._callback_query.get_from_user().get_id())
         data: PaginationAPIReponse[Model] = await APIService().get_models(
             f"{SearchMenuActionCallbackQueryRouter.HOST}"
-            f"/api/v1/nfts/models/?offset=0&limit={SearchMenuActionCallbackQueryRouter.PAGE_LIMIT}")
+            f"/api/v1/models/?collections={search_state.collection.name}&offset=0&limit={SearchMenuActionCallbackQueryRouter.PAGE_LIMIT}")
         search_state.next_page = data.next
 
         # Редактируем клавиатуру
-        keyboard = FiltersChoiceKeyboardCreator(data, data.next, locale).get_keyboard()
+        keyboard = FiltersChoiceKeyboardCreator(data, "model", locale).get_keyboard()
         message: IMessageAdapter = self._callback_query.get_message()
-        await message.edit_reply_markup(reply_markup=keyboard)
-
-        # Получаем текст сообщения
-        message_text = i18n().get_text(SystemMessages.SELECT_MODEL_MESSAGE, locale)
+        message_text = i18n().get_text(SystemMessages.SELECT_SYMBOL_MESSAGE, locale)
         await message.edit_message_text(message_text)
+        await message.edit_reply_markup(reply_markup=keyboard)
 
     async def __backdrop_menu_action(self) -> None:
         """
@@ -150,22 +148,20 @@ class SearchMenuActionCallbackQueryRouter(BaseCallbackQueryRouter):
         :return: None
         """
 
-        locale: Locale = await LanguageManager().get_locale(self._callback_query.get_from_user().get_id())
+        locale: Locale = await LocalesManager().get_locale(self._callback_query.get_from_user().get_id())
 
         search_state = SearchStateManager().get(self._callback_query.get_from_user().get_id())
         data: PaginationAPIReponse[Backdrop] = await APIService().get_backdrops(
             f"{SearchMenuActionCallbackQueryRouter.HOST}"
-            f"/api/v1/nfts/backdropss/?offset=0&limit={SearchMenuActionCallbackQueryRouter.PAGE_LIMIT}")
+            f"/api/v1/backdrops/?collections={search_state.collection.name}&offset=0&limit={SearchMenuActionCallbackQueryRouter.PAGE_LIMIT}")
         search_state.next_page = data.next
 
-        keyboard = FiltersChoiceKeyboardCreator(data, data.next, locale).get_keyboard()
+        keyboard = FiltersChoiceKeyboardCreator(data, "backdrop", locale).get_keyboard()
 
         message: IMessageAdapter = self._callback_query.get_message()
-        await message.edit_reply_markup(reply_markup=keyboard)
-
-        # Изменяем сообщение
-        message_text = i18n().get_text(SystemMessages.SELECT_BACKDROP_MESSAGE, locale)
+        message_text = i18n().get_text(SystemMessages.SELECT_SYMBOL_MESSAGE, locale)
         await message.edit_message_text(message_text)
+        await message.edit_reply_markup(reply_markup=keyboard)
 
     async def __symbol_menu_action(self) -> None:
         """
@@ -177,17 +173,17 @@ class SearchMenuActionCallbackQueryRouter(BaseCallbackQueryRouter):
         search_state = SearchStateManager().get(self._callback_query.get_from_user().get_id())
         data: PaginationAPIReponse[Symbol] = await APIService().get_symbols(
             f"{SearchMenuActionCallbackQueryRouter.HOST}"
-            f"/api/v1/nfts/symbols/?offset=0&limit={SearchMenuActionCallbackQueryRouter.PAGE_LIMIT}")
+            f"/api/v1/symbols/?collections={search_state.collection.name}&offset=0&limit={SearchMenuActionCallbackQueryRouter.PAGE_LIMIT}")
 
         search_state.next_page = data.next
 
-        locale: Locale = await LanguageManager().get_locale(self._callback_query.get_from_user().get_id())
+        locale: Locale = await LocalesManager().get_locale(self._callback_query.get_from_user().get_id())
 
-        keyboard = FiltersChoiceKeyboardCreator(data, data.next, locale).get_keyboard()
+        keyboard = FiltersChoiceKeyboardCreator(data, "symbol", locale).get_keyboard()
 
         message: IMessageAdapter = self._callback_query.get_message()
+        message_text = i18n().get_text(SystemMessages.SELECT_SYMBOL_MESSAGE, locale)
+        await message.edit_message_text(message_text)
         await message.edit_reply_markup(reply_markup=keyboard)
 
         # Изменяем сообщение
-        message_text = i18n().get_text(SystemMessages.SELECT_SYMBOL_MESSAGE, locale)
-        await message.edit_message_text(message_text)

@@ -5,12 +5,12 @@ from callbacks.search_callbacks import ChoiceFilter
 from routers.callback_query_routers.BaseCallbackQueryRouter import BaseCallbackQueryRouter
 from search_nft_service.SearchStateManager import SearchStateManager
 from search_nft_service.keyboard_creators.MainSearchMenuKeyboardMenu import MainSearchMenuKeyboardMenu
-from localization_service.LocalesManager import LanguageManager
+from localization_service.LocalesManager import LocalesManager
 from localization_service.types import SystemMessages, Locale
 from localization_service.i18n import i18n
 
 
-class ChoiceCollectionCallbackQueryRouter(BaseCallbackQueryRouter):
+class ChoiceFilterCallbackQueryRouter(BaseCallbackQueryRouter):
 
     def __init__(self, callback_query: CallbackQuery):
         super().__init__(callback_query)
@@ -45,7 +45,7 @@ class ChoiceCollectionCallbackQueryRouter(BaseCallbackQueryRouter):
         :return: None
         """
 
-        locale: Locale = await LanguageManager().get_locale(self._callback_query.get_from_user().get_id())
+        locale: Locale = await LocalesManager().get_locale(self._callback_query.get_from_user().get_id())
 
         # Создаем клавиатуру
         search_state = SearchStateManager().get(self._callback_query.get_from_user().get_id())

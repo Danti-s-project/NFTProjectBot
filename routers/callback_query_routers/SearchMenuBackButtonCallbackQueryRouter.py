@@ -1,5 +1,5 @@
 from abstraction.keyboard.IInlineKeyboard import IInlineKeyboard
-from localization_service.LocalesManager import LanguageManager
+from localization_service.LocalesManager import LocalesManager
 from localization_service.i18n import i18n
 from localization_service.types import SystemMessages, Locale
 from routers.callback_query_routers.BaseCallbackQueryRouter import BaseCallbackQueryRouter
@@ -14,7 +14,7 @@ class SearchMenuBackButtonCallbackQueryRouter(BaseCallbackQueryRouter):
 
     async def route(self) -> None:
 
-        locale = await LanguageManager().get_locale(self._callback_query.get_from_user().get_id())
+        locale = await LocalesManager().get_locale(self._callback_query.get_from_user().get_id())
 
         keyboard = MainSearchMenuKeyboardMenu(locale).get_keyboard()
         await self._callback_query.get_message().edit_reply_markup(reply_markup=keyboard)

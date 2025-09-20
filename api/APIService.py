@@ -211,7 +211,7 @@ class APIService:
         json_data = await response.json()
         result_field = []
 
-        for item in json_data["result"]:
+        for item in json_data["results"]:
             result_field.append(model(**item))
 
         serialize_response = PaginationAPIReponse(
@@ -334,7 +334,7 @@ class APIService:
 
         for item in await response.json():
             nft = NFT(
-                model=Model(name=item['model']),
+                model=Model(name=item['nft_model']),
                 collection=Collection(name=item['collection'], indexed=None, quantity=None),
                 backdrop=Backdrop(name=item['backdrop']),
                 symbol=Symbol(name=item['symbol']),
