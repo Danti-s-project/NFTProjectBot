@@ -89,3 +89,10 @@ class PaginationAPIReponse(Generic[T]):
 @dataclass
 class NFTSAPIResponse:
     result: List[NFT]
+
+
+@dataclass
+class CousesAPIResponse:
+    user_id: int
+    chapter: int
+    lesson: int

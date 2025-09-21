@@ -6,10 +6,9 @@
 Если вам нужно отправить запрос, которого еще нет в APIService, то просто внесите его
 """
 
-
 import os
 import logging
-from typing import TypeVar, Type, Optional
+from typing import TypeVar, Type, Optional, List
 
 import aiohttp
 import dotenv
@@ -23,15 +22,16 @@ from api.models import (PaginationAPIReponse,
                         Owner,
                         NFT,
                         NFTSAPIResponse,
-                        User)
+                        User,
+                        CousesAPIResponse)
 from api.types import REQUEST_TYPE
 
 dotenv.load_dotenv()
 
 logger = logging.getLogger('APIService')
 
-
 T = TypeVar('T')
+
 
 # TODO: Сделать так, чтобы хранилась не ссылка на пагинацию а оффсеты и лимиты
 
@@ -44,7 +44,6 @@ class APIService:
     HOST = os.getenv('HOST')
 
     _instance = None
-
 
     class Response:
         """
@@ -262,7 +261,6 @@ class APIService:
 
         return await self.endpoint_with_pagination_request(url, Model)
 
-
     async def get_user(self, user_id: int) -> Optional[User]:
         """
         Получить пользователя по user_id
@@ -306,7 +304,7 @@ class APIService:
 
         await self.__make_request(
             REQUEST_TYPE.POST,
-        f'{APIService.HOST}/api/v1/users/{user_id}/',
+            f'{APIService.HOST}/api/v1/users/{user_id}/',
             json=kwargs
         )
 
@@ -361,6 +359,54 @@ class APIService:
         serialize_response = NFTSAPIResponse(result)
 
         return serialize_response
+
+    async def get_completed_lessons(self, course_name: str, user_id: int) -> List[CousesAPIResponse]:
+        """
+        Получить список пройденный уроков в <course_name> пользователем <user_id>
+
+        :param course_name: Название курса. Должно соответствовать названию в path до api эндпоинта на бекенде
+        :param user_id: айди пользователя
+        :return: Список пройденных уроков
+        """
+
+        # Делаем запрос
+        response = await self.__make_request(
+            REQUEST_TYPE.GET,
+            f"{APIService.HOST}/api/v1/{course_name}/?user_id={user_id}"
+        )
+
+
+        # Сериализуем данные
+        result: List[CousesAPIResponse] = []
+
+        for item in await response.json():
+            user_id = item['user_id']
+            chapter = item['chapter']
+            lesson = item['lesson']
+
+            result.append(CousesAPIResponse(user_id=user_id, chapter=chapter, lesson=lesson))
+
+        return result
+
+    async def new_completed_lesson(self, user_id: int, chapter: int, lesson: int, course_name: str) -> None:
+        """
+        Создать новый пройденный урок
+
+        :param user_id: айди пользователя
+        :param chapter: номер главы
+        :param lesson: номер урока
+        :param course_name: Название курса. Должно соответствовать названию в path до api эндпоинта на бекенде
+        :return: None
+        """
+
+        request_json = {
+            'user_id': user_id,
+            'chapter': chapter,
+            'lesson': lesson
+        }
+
+        await self.__make_request(REQUEST_TYPE.POST, f"{APIService.HOST}/api/v1/{course_name}/", json=request_json)
+
 
     async def close_session(self) -> None:
         """
