@@ -92,7 +92,7 @@ class NFTSAPIResponse:
 
 
 @dataclass
-class CousesAPIResponse:
+class CoursesAPIResponse:
     user_id: int
     chapter: int
     lesson: int

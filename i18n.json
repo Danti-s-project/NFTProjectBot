@@ -138,5 +138,10 @@
     "en": "Language successful changed!",
     "ru": "Язык успешно изменен",
     "zh": ""
+  },
+  "select_course": {
+    "en": "Please, select course",
+    "ru": "Пожалуйста, выберите курс",
+    "zh": ""
   }
 }

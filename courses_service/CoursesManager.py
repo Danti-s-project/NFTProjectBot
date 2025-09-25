@@ -1,7 +1,10 @@
 from typing import List, Dict
 import json
 
+from api.APIService import APIService
+from api.models import CoursesAPIResponse
 from courses_service.types import CoursesEnum, Course, LessonPart, Lesson, Chapter
+from localization_service.types import Locale
 
 # TODO: logging + end this
 
@@ -30,7 +33,9 @@ class CoursesManager:
     def __init(self, *args, **kwargs):
         # Загрузка локалей в оперативку
 
-        pass
+        self.__ru_course = self.__load_courses("courses_ru.json")
+        self.__en_course = self.__load_courses("courses_en.json")
+        self.__zh_course = self.__load_courses("courses_zh.json")
 
     def __load_courses(self, file_name: str) -> Dict[CoursesEnum, Course]:
         result = {}
@@ -116,10 +121,103 @@ class CoursesManager:
 
 
     async def get_completed_courses(self, user_id: int) -> List[CoursesEnum]:
-        pass
+        """
+        Получить список завершенных курсов
 
-    async def get_completed_chapters(self, user_id: int, course: CoursesEnum) -> List[int]:
-        pass
+        :param user_id: айди пользователя
+        :return: Список завершенных курсов
+        """
 
-    async def get_completed_lessons(self, user_id: int, course: CoursesEnum, chapter: int) -> List[int]:
-        pass
+        api_service = APIService()
+        result = []
+
+        for course in CoursesEnum:
+            response: List[CoursesAPIResponse] = await api_service.get_completed_lessons(course.value, user_id)
+            if len(response) == self.__en_course[course].lessons_count:
+                result.append(course)
+
+        return result
+
+
+    async def get_completed_chapters(self, user_id: int, course_enum: CoursesEnum) -> List[int]:
+        """
+        Получить завершенные главы
+
+        :param user_id: Айди пользователя
+        :param course_enum: Курс по которому нужно вернуть завершенные главы
+        :return: Список номеров глав
+        """
+
+        api_service = APIService()
+        result = []
+
+        response: List[CoursesAPIResponse] = await api_service.get_completed_lessons(course_enum.value, user_id)
+
+        # Перебираем каждую главу в курсе
+        for chapter in range(len(self.__ru_course[course_enum].chapters)):
+            lessons = 0
+
+            # Перебираем все пройденные уроки пользователем
+            for i in response:
+                # Если пройденный урок из главы, добавляем к пройденным урокам
+                if i.chapter == chapter:
+                    lessons += 1
+
+            # Если количество пройденных уроков равно количеству уроков в главе, добавляем в массив
+            if len(self.__en_course[course_enum].chapters[chapter].lessons) == lessons:
+                result.append(chapter)
+
+        return result
+
+
+    async def get_completed_lessons(self, user_id: int, course_enum: CoursesEnum, chapter: int) -> List[int]:
+        """
+        Получить завершенные уроки
+
+        :param user_id: Айди пользователя
+        :param course_enum: Курс по которому нужно что-либо найти
+        :param chapter: Номер главы
+        :return: None
+        """
+
+        api_service = APIService()
+        result = []
+
+        response: List[CoursesAPIResponse] = await api_service.get_completed_lessons(course_enum.value, user_id)
+
+        for course in response:
+            if course.chapter == chapter:
+                result.append(course.lesson)
+
+        return result
+
+    def __get_locale_dict(self, locale: Locale) -> Dict[CoursesEnum, Course]:
+        """
+        Получить json с информацией о курсах, в зависимости от языка пользователя
+
+        :param locale: язык пользователя
+        :return: json с информацией о курсах
+        """
+
+        match locale:
+            case Locale.EN:
+                return self.__en_course
+            case Locale.RU:
+                return self.__ru_course
+            case Locale.ZH:
+                return self.__zh_course
+            case _:
+                return {}
+
+
+    def get_course_name(self, locale: Locale, course: CoursesEnum) -> str:
+        """
+        Получить название курса на нужной локали
+
+        :param locale: язык интерфейса
+        :param course: объект курса
+        :return: Название курса
+        """
+
+        locale_courses = self.__get_locale_dict(locale)
+        return locale_courses[course].alias

@@ -23,7 +23,7 @@ from api.models import (PaginationAPIReponse,
                         NFT,
                         NFTSAPIResponse,
                         User,
-                        CousesAPIResponse)
+                        CoursesAPIResponse)
 from api.types import REQUEST_TYPE
 
 dotenv.load_dotenv()
@@ -170,7 +170,10 @@ class APIService:
 
             if response is not None:
                 # Заворачиваем в адаптер
-                result = APIService.Response(response.status, await response.json())
+                if response.status == 200:
+                    result = APIService.Response(response.status, await response.json())
+                else:
+                    result = APIService.Response(response.status, {})
 
                 logger.info(f'request to url {url} with args {json}, {kwargs} response status: {result.status}')
                 return result
@@ -360,7 +363,7 @@ class APIService:
 
         return serialize_response
 
-    async def get_completed_lessons(self, course_name: str, user_id: int) -> List[CousesAPIResponse]:
+    async def get_completed_lessons(self, course_name: str, user_id: int) -> List[CoursesAPIResponse]:
         """
         Получить список пройденный уроков в <course_name> пользователем <user_id>
 
@@ -377,14 +380,14 @@ class APIService:
 
 
         # Сериализуем данные
-        result: List[CousesAPIResponse] = []
+        result: List[CoursesAPIResponse] = []
 
         for item in await response.json():
             user_id = item['user_id']
             chapter = item['chapter']
             lesson = item['lesson']
 
-            result.append(CousesAPIResponse(user_id=user_id, chapter=chapter, lesson=lesson))
+            result.append(CoursesAPIResponse(user_id=user_id, chapter=chapter, lesson=lesson))
 
         return result
 

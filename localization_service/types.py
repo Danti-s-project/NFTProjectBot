@@ -39,3 +39,5 @@ class SystemMessages(str, enum.Enum):
     LANGUAGE_BUTTON_TEXT = "language_button_text"
     PLEASE_SELECT_LANGUAGE_TEXT = "please_select_language"
     LANGUAGE_SUCCESSFUL_CHANGED = "language_successful_changed"
+
+    SELECT_COURSE = "select_course"

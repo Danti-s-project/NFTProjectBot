@@ -12,10 +12,10 @@ class CoursesEnum(enum.Enum):
     Список курсов
     """
 
-    TONCOIN_COURSE = "p2p_course"
-    NFT_SELL_COURSE = "toncoin_course"
-    P2P_COURSE = "scam_course"
-    SCAM_COURSE = "nft_sell_course"
+    P2P_COURSE = "p2p_course"
+    # toncoin_course = "toncoin_course"
+    # SCAM_COURSE = "scam_course"
+    # NFT_SELL_COURSE = "nft_sell_course"
 
 
 @dataclass

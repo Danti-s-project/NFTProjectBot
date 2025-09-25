@@ -6,6 +6,7 @@ from localization_service.LocalesManager import LocalesManager
 from localization_service.i18n import i18n
 from search_nft_service.SearchStateManager import SearchStateManager
 from utils.logging_setup import setup_logger
+from courses_service.CoursesManager import CoursesManager
 from dispatcher import dp, bot
 
 
@@ -21,6 +22,8 @@ async def main():
 
     i18n()
     LocalesManager()
+
+    CoursesManager()
 
     logger.info("Все сервисы инициализированы")
 

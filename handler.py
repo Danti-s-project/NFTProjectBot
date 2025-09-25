@@ -16,6 +16,7 @@ from routers.callback_query_routers.SearchMenuBackButtonCallbackQueryRouter impo
 from routers.callback_query_routers.ChoiceFilterCallbackQueryRouter import ChoiceFilterCallbackQueryRouter
 from routers.callback_query_routers.SelectLanguageCallbackQueryRouter import SelectLanguageCallbackQueryRouter
 from routers.message_routers.ProfileRouter import ProfileRouter
+from routers.message_routers.CourseCommandRouter import CourseCommandRouter
 from routers.callback_query_routers.SettingsActionCallbackQueryRouter import SettingsActionCallbackQueryRouter
 from routers.callback_query_routers.ProfileActoinCallbackQueryRouter import ProfileActionCallbackQueryRouter
 from callbacks.search_callbacks import ChoiceCollection, ShowCollectionsPage, Back, Action, ChoiceFilter
@@ -206,4 +207,19 @@ async def select_language_callback_query_handler(callback_query: CallbackQuery) 
     logger.info(f"Пользователь {callback_query.from_user.id} нажал кнопку в меню выбора языка")
 
     router = SelectLanguageCallbackQueryRouter(callback_query)
+    await router.route()
+
+
+@dp.message(Command("course"))
+async def course_command_handler(message: Message) -> None:
+    """
+    Срабатывает при использовании команды /course
+
+    :param message: aiogram.types.Message
+    :return: None
+    """
+
+    logger.info(f"Пользователь {message.from_user.id} использовал команду /course")
+
+    router = CourseCommandRouter(message)
     await router.route()
