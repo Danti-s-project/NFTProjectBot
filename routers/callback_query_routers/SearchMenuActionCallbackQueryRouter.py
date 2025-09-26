@@ -1,7 +1,7 @@
 import os
 
 from abstraction.IMessage import IMessageAdapter
-from abstraction.keyboard.InlineKeyboardFactory import InlineKeyboardFactory
+from abstraction.inline_keyboard.InlineKeyboardFactory import InlineKeyboardFactory
 from api.APIService import APIService
 from api.models import NFTSAPIResponse, PaginationAPIReponse, Symbol, Model, Backdrop
 from callbacks.search_callbacks import Action, Back

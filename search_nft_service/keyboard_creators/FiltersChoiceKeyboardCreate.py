@@ -1,7 +1,7 @@
 from typing import Optional
 
-from abstraction.keyboard.IInlineKeyboard import IInlineKeyboard
-from abstraction.keyboard.InlineKeyboardFactory import InlineKeyboardFactory
+from abstraction.inline_keyboard.IInlineKeyboard import IInlineKeyboard
+from abstraction.inline_keyboard.InlineKeyboardFactory import InlineKeyboardFactory
 from api.models import PaginationAPIReponse, BaseNFTDataclass
 from callbacks.search_callbacks import ShowFilterPage, ChoiceFilter, Back
 from localization_service.i18n import i18n

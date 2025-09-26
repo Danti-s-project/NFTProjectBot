@@ -2,8 +2,8 @@ from typing import List
 
 from aiogram.types import InlineKeyboardMarkup
 
-from abstraction.keyboard.IInlineButton import IInlineButton
-from abstraction.keyboard.IInlineKeyboard import IInlineKeyboard
+from abstraction.inline_keyboard.IInlineButton import IInlineButton
+from abstraction.inline_keyboard.IInlineKeyboard import IInlineKeyboard
 
 
 class Aiogram3InlineKeyboard(IInlineKeyboard):

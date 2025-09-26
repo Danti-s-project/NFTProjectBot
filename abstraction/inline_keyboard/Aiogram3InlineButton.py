@@ -1,6 +1,6 @@
 from aiogram.types import InlineKeyboardButton
 
-from abstraction.keyboard.IInlineButton import IInlineButton
+from abstraction.inline_keyboard.IInlineButton import IInlineButton
 
 
 class Aiogram3InlineButton(IInlineButton):

@@ -143,5 +143,15 @@
     "en": "Please, select course",
     "ru": "Пожалуйста, выберите курс",
     "zh": ""
+  },
+  "select_chapter": {
+    "en": "Please select chapter.",
+    "ru": "Пожалуйста выберите главу",
+    "zh": ""
+  },
+  "select_lesson": {
+    "en": "Please, select lesson.",
+    "ru": "Пожалуйста выберите урок",
+    "zh": ""
   }
 }

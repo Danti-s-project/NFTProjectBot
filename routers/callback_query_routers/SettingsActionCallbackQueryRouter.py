@@ -1,4 +1,4 @@
-from abstraction.keyboard.InlineKeyboardFactory import InlineKeyboardFactory
+from abstraction.inline_keyboard.InlineKeyboardFactory import InlineKeyboardFactory
 from routers.callback_query_routers.BaseCallbackQueryRouter import BaseCallbackQueryRouter
 from callbacks.profile_callbacks import SettingsAction, SelectLanguage
 from localization_service.LocalesManager import LocalesManager

@@ -16,11 +16,14 @@ from routers.callback_query_routers.SearchMenuBackButtonCallbackQueryRouter impo
 from routers.callback_query_routers.ChoiceFilterCallbackQueryRouter import ChoiceFilterCallbackQueryRouter
 from routers.callback_query_routers.SelectLanguageCallbackQueryRouter import SelectLanguageCallbackQueryRouter
 from routers.message_routers.ProfileRouter import ProfileRouter
+from routers.callback_query_routers.SelectChapterCallbackQueryRouter import SelectChapterCallbackQueryRouter
+from routers.callback_query_routers.SelectCourseCallbackQueryRouter import SelectCourseCallbackQueryRouter
 from routers.message_routers.CourseCommandRouter import CourseCommandRouter
 from routers.callback_query_routers.SettingsActionCallbackQueryRouter import SettingsActionCallbackQueryRouter
 from routers.callback_query_routers.ProfileActoinCallbackQueryRouter import ProfileActionCallbackQueryRouter
 from callbacks.search_callbacks import ChoiceCollection, ShowCollectionsPage, Back, Action, ChoiceFilter
 from callbacks.profile_callbacks import ProfileAction, SettingsAction, SelectLanguage
+from callbacks.courses_callback import SelectCourse, SelectChapter
 from dispatcher import dp
 
 logger = logging.getLogger('handler')
@@ -222,4 +225,34 @@ async def course_command_handler(message: Message) -> None:
     logger.info(f"Пользователь {message.from_user.id} использовал команду /course")
 
     router = CourseCommandRouter(message)
+    await router.route()
+
+
+@dp.callback_query(SelectCourse.filter())
+async def select_course_callback_query_handler(callback_query: CallbackQuery) -> None:
+    """
+    Срабатывает при выборе курса в /course
+
+    :param callback_query: aiogram.types.CallbackQuery
+    :return: None
+    """
+
+    logger.info(f"Пользователь {callback_query.from_user.id} нажал кнопку выбора курсов в /course")
+
+    router = SelectCourseCallbackQueryRouter(callback_query)
+    await router.route()
+
+
+@dp.callback_query(SelectChapter.filter())
+async def select_chapter_callback_query_query_handler(callback_query: CallbackQuery) -> None:
+    """
+    Срабатывает при выборе главы в /course
+
+    :param callback_query: aiogram.types.CallbackQuery
+    :return: None
+    """
+
+    logger.info(f"Пользователь {callback_query.from_user.id} нажал кнопку выбора главы в /course")
+
+    router = SelectChapterCallbackQueryRouter(callback_query)
     await router.route()

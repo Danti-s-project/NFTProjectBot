@@ -1,6 +1,6 @@
 import logging
 
-from abstraction.keyboard.InlineKeyboardFactory import InlineKeyboardFactory
+from abstraction.inline_keyboard.InlineKeyboardFactory import InlineKeyboardFactory
 from callbacks.profile_callbacks import ProfileAction
 from localization_service.LocalesManager import LocalesManager
 from localization_service.types import SystemMessages

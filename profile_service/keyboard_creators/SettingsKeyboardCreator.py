@@ -1,5 +1,5 @@
-from abstraction.keyboard.InlineKeyboardFactory import InlineKeyboardFactory
-from abstraction.keyboard.IInlineKeyboard import IInlineKeyboard
+from abstraction.inline_keyboard.InlineKeyboardFactory import InlineKeyboardFactory
+from abstraction.inline_keyboard.IInlineKeyboard import IInlineKeyboard
 from callbacks.profile_callbacks import SettingsAction
 from localization_service.types import SystemMessages
 from localization_service.i18n import i18n

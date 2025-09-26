@@ -1,9 +1,9 @@
 from typing import List, Optional
 
-from abstraction.keyboard.Aiogram3InlineButton import Aiogram3InlineButton
-from abstraction.keyboard.Aiogram3InlineKeyboard import Aiogram3InlineKeyboard
-from abstraction.keyboard.IInlineButton import IInlineButton
-from abstraction.keyboard.IInlineKeyboard import IInlineKeyboard
+from abstraction.inline_keyboard.Aiogram3InlineButton import Aiogram3InlineButton
+from abstraction.inline_keyboard.Aiogram3InlineKeyboard import Aiogram3InlineKeyboard
+from abstraction.inline_keyboard.IInlineButton import IInlineButton
+from abstraction.inline_keyboard.IInlineKeyboard import IInlineKeyboard
 
 
 class InlineKeyboardFactory:

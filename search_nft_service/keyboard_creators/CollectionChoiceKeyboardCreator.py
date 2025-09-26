@@ -1,7 +1,7 @@
 from typing import List
 
-from abstraction.keyboard.IInlineKeyboard import IInlineKeyboard
-from abstraction.keyboard.InlineKeyboardFactory import InlineKeyboardFactory
+from abstraction.inline_keyboard.IInlineKeyboard import IInlineKeyboard
+from abstraction.inline_keyboard.InlineKeyboardFactory import InlineKeyboardFactory
 from api.models import Collection
 from callbacks.search_callbacks import ShowCollectionsPage, ChoiceCollection
 from localization_service.i18n import i18n

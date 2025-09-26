@@ -221,3 +221,31 @@ class CoursesManager:
 
         locale_courses = self.__get_locale_dict(locale)
         return locale_courses[course].alias
+
+    def get_course_chapter_names(self, locale: Locale, course: CoursesEnum) -> List[str]:
+        """
+        Получить названия всех глав в курсе
+
+        :param locale: язык курса (Locale курс)
+        :param course: объект курса
+        :return: Список имен глав
+        """
+
+        locale_courses = self.__get_locale_dict(locale)
+        course = locale_courses[course]
+        return [i.name for i in course.chapters]
+
+    def get_chapter_lesson_names(self, locale: Locale, course: CoursesEnum, chapter_index: int) -> List[str]:
+        """
+        Получить названия всех уроков в главе
+
+        :param locale: язык курса (Locale курс)
+        :param course: объект курса
+        :param chapter_index: индекс главы
+        :return: Список имен глав
+        """
+
+        locale_courses = self.__get_locale_dict(locale)
+        course = locale_courses[course]
+        chapter = course.chapters[chapter_index]
+        return [i.name for i in chapter.lessons]

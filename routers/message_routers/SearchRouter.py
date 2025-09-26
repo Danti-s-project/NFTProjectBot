@@ -5,7 +5,7 @@ from aiogram.types import Message
 
 from api.APIService import APIService
 from api.models import Collection
-from abstraction.keyboard.IInlineKeyboard import IInlineKeyboard
+from abstraction.inline_keyboard.IInlineKeyboard import IInlineKeyboard
 from routers.message_routers.BaseMessageRouter import BaseMessageRouter
 from search_nft_service.SearchStateManager import SearchStateManager
 from search_nft_service.keyboard_creators.CollectionChoiceKeyboardCreator import CollectionChoiceKeyboardCreator

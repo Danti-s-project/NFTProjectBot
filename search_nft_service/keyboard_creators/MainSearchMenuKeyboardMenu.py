@@ -1,8 +1,8 @@
 from typing import Optional
 
-from abstraction.keyboard.InlineKeyboardFactory import InlineKeyboardFactory
-from abstraction.keyboard.IInlineKeyboard import IInlineKeyboard
-from abstraction.keyboard.IInlineButton import IInlineButton
+from abstraction.inline_keyboard.InlineKeyboardFactory import InlineKeyboardFactory
+from abstraction.inline_keyboard.IInlineKeyboard import IInlineKeyboard
+from abstraction.inline_keyboard.IInlineButton import IInlineButton
 from callbacks.search_callbacks import Action
 from localization_service.types import SystemMessages, Locale
 from localization_service.i18n import i18n
