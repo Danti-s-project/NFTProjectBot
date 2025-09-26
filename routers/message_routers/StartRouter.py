@@ -3,7 +3,7 @@ import os
 from api.APIService import APIService
 from localization_service.LocalesManager import LocalesManager
 from localization_service.i18n import i18n
-from localization_service.types import SystemMessages
+from localization_service.types import SystemMessages, Locale
 from routers.message_routers.BaseMessageRouter import BaseMessageRouter
 
 
@@ -50,8 +50,13 @@ class StartRouter(BaseMessageRouter):
         return bool(await APIService().get_user(user_id))
 
     async def __send_hello_message(self) -> None:
-        locale = await LocalesManager().get_locale(self._message.get_from_user().get_id())
-        message = i18n().get_text(SystemMessages.START_MESSAGE, locale)
+        # Пользователь может регистрироваться в боте первый раз. На сервере нет его locale. Если его нет, отправляем сообщение на англйиском
+
+        if await self.__user_exists(self._message.get_from_user().get_id()):
+            locale = await LocalesManager().get_locale(self._message.get_from_user().get_id())
+            message = i18n().get_text(SystemMessages.START_MESSAGE, locale)
+        else:
+            message = i18n().get_text(SystemMessages.START_MESSAGE, Locale.EN)
 
         await self._message.answer(message)
 
