@@ -4,7 +4,7 @@ from aiogram.types import Message
 
 from abstraction.Aiogram3User import Aiogram3User
 from abstraction.IMessage import IMessageAdapter
-from abstraction.keyboard.IInlineKeyboard import IInlineKeyboard
+from abstraction.inline_keyboard.IInlineKeyboard import IInlineKeyboard
 from abstraction.IUser import IUser
 
 
