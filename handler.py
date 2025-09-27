@@ -4,9 +4,11 @@
 
 import logging
 from aiogram.filters.command import CommandStart, CommandObject,  Command
+from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, CallbackQuery
 
 from routers.message_routers.StartRouter import StartRouter
+from fsm.course_fsm.CourseStateGroup import CourseStateGroup
 from routers.message_routers.SearchRouter import SearchRouter
 from routers.message_routers.StartRouterWithDeeplLnk import StartRouterWithDeepLink
 from routers.callback_query_routers.ChoiceCollectionCallbackQueryRouter import ChoiceCollectionCallbackQueryRouter
@@ -18,12 +20,14 @@ from routers.callback_query_routers.SelectLanguageCallbackQueryRouter import Sel
 from routers.message_routers.ProfileRouter import ProfileRouter
 from routers.callback_query_routers.SelectChapterCallbackQueryRouter import SelectChapterCallbackQueryRouter
 from routers.callback_query_routers.SelectCourseCallbackQueryRouter import SelectCourseCallbackQueryRouter
+from routers.callback_query_routers.SelectLessonCallbackQueryRouter import SelectLessonCallbackQueryRouter
 from routers.message_routers.CourseCommandRouter import CourseCommandRouter
+from routers.fsm_routers.CourseFSMRouter import CourseFSMRouter
 from routers.callback_query_routers.SettingsActionCallbackQueryRouter import SettingsActionCallbackQueryRouter
 from routers.callback_query_routers.ProfileActoinCallbackQueryRouter import ProfileActionCallbackQueryRouter
 from callbacks.search_callbacks import ChoiceCollection, ShowCollectionsPage, Back, Action, ChoiceFilter
 from callbacks.profile_callbacks import ProfileAction, SettingsAction, SelectLanguage
-from callbacks.courses_callback import SelectCourse, SelectChapter
+from callbacks.courses_callback import SelectCourse, SelectChapter, SelectLesson
 from dispatcher import dp
 
 logger = logging.getLogger('handler')
@@ -255,4 +259,36 @@ async def select_chapter_callback_query_query_handler(callback_query: CallbackQu
     logger.info(f"Пользователь {callback_query.from_user.id} нажал кнопку выбора главы в /course")
 
     router = SelectChapterCallbackQueryRouter(callback_query)
+    await router.route()
+
+
+@dp.callback_query(SelectLesson.filter())
+async def select_lesson_callback_query_handler(callback_query: CallbackQuery, state: FSMContext) -> None:
+    """
+    Срабатывает при выборе урока в /course
+
+    :param callback_query: aiogram.types.CallbackQuery
+    :param state: aiogram.fsm.context.FSMContext
+    :return: None
+    """
+
+    logger.info(f"Пользователь {callback_query.from_user.id} нажал кнопку выбора урока в /course")
+
+    router = SelectLessonCallbackQueryRouter(callback_query, fsm_state=state)
+    await router.route()
+
+
+@dp.message(CourseStateGroup.lesson)
+async def lesson_fsm_handler(message: Message, state: FSMContext) -> None:
+    """
+    Срабатывает при нажатии кнопки прохождения урока
+
+    :param message: aiogram.types.Message
+    :param state: aiogram.fsm.context.FSMContext
+    :return: None
+    """
+
+    logger.info(f"Пользователь {message.from_user.id} проходит уроки")
+
+    router = CourseFSMRouter(message, state)
     await router.route()

@@ -8,6 +8,8 @@ from localization_service.i18n import i18n
 from localization_service.types import SystemMessages, Locale
 
 
+# TODO: Заменить все keyboard креаторы на константы при возможности
+
 class CollectionChoiceKeyboardCreator:
     """
     Класс, создающий клавиатуру для выбора коллекции.

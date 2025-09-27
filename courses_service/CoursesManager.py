@@ -1,10 +1,11 @@
-from typing import List, Dict
+from typing import List, Dict, Optional
 import json
 
 from api.APIService import APIService
 from api.models import CoursesAPIResponse
 from courses_service.types import CoursesEnum, Course, LessonPart, Lesson, Chapter
 from localization_service.types import Locale
+
 
 # TODO: logging + end this
 
@@ -14,7 +15,6 @@ class CoursesManager:
     Менеджер
     """
 
-
     _instance = None
 
     def __new__(cls, *args, **kwargs):
@@ -23,16 +23,14 @@ class CoursesManager:
             cls._initialized = False
         return cls._instance
 
-
     def __init__(self, *args, **kwargs):
         if not self.__class__._initialized:
             self.__class__._initialized = True  # set initial flag to True
             self.__init(*args, **kwargs)
 
-
     def __init(self, *args, **kwargs):
         # Загрузка локалей в оперативку
-
+        # TODO: Добавить объектную природу
         self.__ru_course = self.__load_courses("courses_ru.json")
         self.__en_course = self.__load_courses("courses_en.json")
         self.__zh_course = self.__load_courses("courses_zh.json")
@@ -119,7 +117,6 @@ class CoursesManager:
 
         return lesson_part
 
-
     async def get_completed_courses(self, user_id: int) -> List[CoursesEnum]:
         """
         Получить список завершенных курсов
@@ -137,7 +134,6 @@ class CoursesManager:
                 result.append(course)
 
         return result
-
 
     async def get_completed_chapters(self, user_id: int, course_enum: CoursesEnum) -> List[int]:
         """
@@ -168,7 +164,6 @@ class CoursesManager:
                 result.append(chapter)
 
         return result
-
 
     async def get_completed_lessons(self, user_id: int, course_enum: CoursesEnum, chapter: int) -> List[int]:
         """
@@ -209,7 +204,6 @@ class CoursesManager:
             case _:
                 return {}
 
-
     def get_course_name(self, locale: Locale, course: CoursesEnum) -> str:
         """
         Получить название курса на нужной локали
@@ -249,3 +243,33 @@ class CoursesManager:
         course = locale_courses[course]
         chapter = course.chapters[chapter_index]
         return [i.name for i in chapter.lessons]
+
+    def get_lesson_part(
+            self,
+            locale: Locale,
+            course: CoursesEnum,
+            chapter_index: int,
+            lesson_index: int,
+            part_index: int) -> Optional[LessonPart]:
+
+        """
+        Получить lesson part по индексам, или None, если LessonPart не существует в курсе
+
+        :param locale: язык интерфейса
+        :param course: курс
+        :param chapter_index: номер главы
+        :param lesson_index: номер урока
+        :param part_index: номер части
+        :return:
+        """
+
+        locale_courses = self.__get_locale_dict(locale)
+        course = locale_courses[course]
+        chapter = course.chapters[chapter_index]
+        lesson = chapter.lessons[lesson_index]
+
+        # Если следующего урока не существует
+        if part_index >= len(lesson.parts):
+            return None
+
+        return lesson.parts[part_index]

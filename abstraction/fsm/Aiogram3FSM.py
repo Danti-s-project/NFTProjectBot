@@ -1,3 +1,5 @@
+from typing import Any, Coroutine
+
 from aiogram.fsm.context import FSMContext
 from abstraction.fsm.IStateMachine import IStateMachine
 from abstraction.fsm.IState import IState
@@ -19,3 +21,10 @@ class Aiogram3FSM(IStateMachine):
 
     async def clear_state(self) -> None:
         await self._ctx.clear()
+
+    # TODO: Добавить в get_data объектную природу
+    async def get_data(self) -> dict[str, Any]:
+        return await self._ctx.get_data()
+
+    async def update_data(self, data: dict[str, Any]) -> None:
+        await self._ctx.update_data(data)

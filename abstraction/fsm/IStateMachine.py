@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Optional
+from typing import Optional, Any
 from abstraction.fsm.IState import IState
 
 
@@ -28,3 +28,21 @@ class IStateMachine(ABC):
         Очистить текущее состояние
         """
         pass
+
+    @abstractmethod
+    async def get_data(self) -> dict[str, Any]:
+        """
+        Получить data стейта
+        :return:
+        """
+
+        pass
+
+    @abstractmethod
+    async def update_data(self, data: dict[str, Any]) -> None:
+        """
+        Обновить данные
+
+        :param data: новые данные
+        :return: None
+        """

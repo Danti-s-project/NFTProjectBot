@@ -1,10 +1,11 @@
 from typing import Optional
 
 from aiogram.types import Message
+from aiogram.types.reply_keyboard_remove import ReplyKeyboardRemove
 
 from abstraction.Aiogram3User import Aiogram3User
+from abstraction.IKeyboard import IKeyboard
 from abstraction.IMessage import IMessageAdapter
-from abstraction.inline_keyboard.IInlineKeyboard import IInlineKeyboard
 from abstraction.IUser import IUser
 
 
@@ -49,7 +50,7 @@ class Aiogram3MessageAdapter(IMessageAdapter):
         """
         return Aiogram3User(self._message.from_user)
 
-    async def answer(self, text: str, reply_markup: IInlineKeyboard = None) -> None:
+    async def answer(self, text: str, reply_markup: IKeyboard = None) -> None:
         """
         Отправить ответ на сообщение пользователя
 
@@ -61,10 +62,12 @@ class Aiogram3MessageAdapter(IMessageAdapter):
         # Получаем aiogram клавиатуру
         if reply_markup:
             reply_markup = reply_markup.get_keyboard_object()
-
+        else:
+            # TODO: Сделать свой объект ReplyKeyboardRemove
+            reply_markup = ReplyKeyboardRemove()
         await self._message.answer(text, reply_markup=reply_markup)
 
-    async def edit_reply_markup(self, reply_markup: IInlineKeyboard) -> None:
+    async def edit_reply_markup(self, reply_markup: IKeyboard) -> None:
         """
         Редактировать inline кнопки под сообщением
 

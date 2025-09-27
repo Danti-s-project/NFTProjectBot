@@ -306,7 +306,7 @@ class APIService:
         """
 
         await self.__make_request(
-            REQUEST_TYPE.POST,
+            REQUEST_TYPE.PATCH,
             f'{APIService.HOST}/api/v1/users/{user_id}/',
             json=kwargs
         )

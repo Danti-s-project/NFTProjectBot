@@ -3,9 +3,10 @@ from typing import List
 from aiogram.types import ReplyKeyboardMarkup
 
 from abstraction.reply_keyboard.IReplyButton import IReplyButton
+from abstraction.IKeyboard import IKeyboard
 
 
-class IReplyKeyboard(ABC):
+class IReplyKeyboard(IKeyboard, ABC):
     """
     Интерфейс для обычной клавиатуры (ReplyKeyboardMarkup)
     """
@@ -28,12 +29,5 @@ class IReplyKeyboard(ABC):
     def add_buttons_row(self, buttons: List[IReplyButton]) -> 'IReplyKeyboard':
         """
         Добавить сразу ряд кнопок
-        """
-        pass
-
-    @abstractmethod
-    def get_keyboard_object(self) -> ReplyKeyboardMarkup:
-        """
-        Получить объект клавиатуры aiogram
         """
         pass

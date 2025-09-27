@@ -43,3 +43,4 @@ class SystemMessages(str, enum.Enum):
     SELECT_COURSE = "select_course"
     SELECT_CHAPTER = "select_chapter"
     SELECT_LESSON = "select_lesson"
+    LESSON_IS_OVER = "lesson_is_over"

@@ -153,5 +153,10 @@
     "en": "Please, select lesson.",
     "ru": "Пожалуйста выберите урок",
     "zh": ""
+  },
+  "lesson_is_over": {
+    "en": "Lesson is over!",
+    "ru": "Урок окончен!",
+    "zh": ""
   }
 }

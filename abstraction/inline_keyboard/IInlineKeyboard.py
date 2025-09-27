@@ -1,10 +1,10 @@
 from abc import ABC, abstractmethod
-from typing import Any, List
+from typing import List
 
 from abstraction.inline_keyboard.IInlineButton import IInlineButton
+from abstraction.IKeyboard import IKeyboard
 
-
-class IInlineKeyboard(ABC):
+class IInlineKeyboard(IKeyboard, ABC):
     """
     Интерфейс для инлайн-клавиатуры в мессенджере
     """
@@ -42,15 +42,5 @@ class IInlineKeyboard(ABC):
 
         Returns:
             IInlineKeyboard: Текущий объект клавиатуры для цепочки вызовов
-        """
-        pass
-
-    @abstractmethod
-    def get_keyboard_object(self) -> Any:
-        """
-        Получить объект клавиатуры в формате, необходимом для конкретной реализации
-
-        Returns:
-            Any: Объект клавиатуры, готовый для использования в библиотеке
         """
         pass

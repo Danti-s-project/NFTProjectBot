@@ -12,6 +12,7 @@ class CoursesEnum(enum.Enum):
     Список курсов
     """
 
+    # TODO: убрать комментарии
     P2P_COURSE = "p2p_course"
     # toncoin_course = "toncoin_course"
     # SCAM_COURSE = "scam_course"
