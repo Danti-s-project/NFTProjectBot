@@ -1,4 +1,4 @@
-from typing import List, Dict, Optional
+from typing import List, Dict, Optional, Set
 import json
 
 from api.APIService import APIService
@@ -135,7 +135,7 @@ class CoursesManager:
 
         return result
 
-    async def get_completed_chapters(self, user_id: int, course_enum: CoursesEnum) -> List[int]:
+    async def get_completed_chapters(self, user_id: int, course_enum: CoursesEnum) -> Set[int]:
         """
         Получить завершенные главы
 
@@ -145,7 +145,7 @@ class CoursesManager:
         """
 
         api_service = APIService()
-        result = []
+        result = set()
 
         response: List[CoursesAPIResponse] = await api_service.get_completed_lessons(course_enum.value, user_id)
 
@@ -161,11 +161,11 @@ class CoursesManager:
 
             # Если количество пройденных уроков равно количеству уроков в главе, добавляем в массив
             if len(self.__en_course[course_enum].chapters[chapter].lessons) == lessons:
-                result.append(chapter)
+                result.add(chapter)
 
         return result
 
-    async def get_completed_lessons(self, user_id: int, course_enum: CoursesEnum, chapter: int) -> List[int]:
+    async def get_completed_lessons(self, user_id: int, course_enum: CoursesEnum, chapter: int) -> Set[int]:
         """
         Получить завершенные уроки
 
@@ -176,13 +176,13 @@ class CoursesManager:
         """
 
         api_service = APIService()
-        result = []
+        result = set()
 
         response: List[CoursesAPIResponse] = await api_service.get_completed_lessons(course_enum.value, user_id)
 
         for course in response:
             if course.chapter == chapter:
-                result.append(course.lesson)
+                result.add(course.lesson)
 
         return result
 

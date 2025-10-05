@@ -60,5 +60,4 @@ class SelectChapterCallbackQueryRouter(BaseCallbackQueryRouter):
 
         # Когда все готово, отправляем сообщение
 
-        # TODO: Превратить все в один запрос
         await self._callback_query.get_message().edit_message(text=text, reply_markup=keyboard)
