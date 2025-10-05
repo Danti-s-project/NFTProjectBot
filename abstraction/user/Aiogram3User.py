@@ -1,6 +1,6 @@
 from aiogram.types import User
 
-from abstraction.IUser import IUser
+from abstraction.user.IUser import IUser
 
 
 class Aiogram3User(IUser):

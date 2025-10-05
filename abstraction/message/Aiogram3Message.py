@@ -1,12 +1,11 @@
 from typing import Optional
 
 from aiogram.types import Message
-from aiogram.types.reply_keyboard_remove import ReplyKeyboardRemove
 
-from abstraction.Aiogram3User import Aiogram3User
+from abstraction.user.Aiogram3User import Aiogram3User
 from abstraction.IKeyboard import IKeyboard
-from abstraction.IMessage import IMessageAdapter
-from abstraction.IUser import IUser
+from abstraction.message.IMessage import IMessageAdapter
+from abstraction.user.IUser import IUser
 
 
 class Aiogram3MessageAdapter(IMessageAdapter):
@@ -59,7 +58,10 @@ class Aiogram3MessageAdapter(IMessageAdapter):
         :return: None
         """
 
-        await self._message.answer(text, reply_markup=reply_markup.get_keyboard_object())
+        if reply_markup:
+            await self._message.answer(text, reply_markup=reply_markup.get_keyboard_object())
+        else:
+            await self._message.answer(text)
 
     async def edit_reply_markup(self, reply_markup: IKeyboard) -> None:
         """

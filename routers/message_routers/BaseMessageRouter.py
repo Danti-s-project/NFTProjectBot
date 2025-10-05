@@ -2,8 +2,8 @@ from abc import ABC
 
 from aiogram.types import Message
 
-from abstraction.IMessage import IMessageAdapter
-from abstraction.Aiogram3Message import Aiogram3MessageAdapter
+from abstraction.message.IMessage import IMessageAdapter
+from abstraction.message.MessageFactory import MessageFactory
 from routers.IRouter import IRouter
 
 
@@ -14,4 +14,4 @@ class BaseMessageRouter(IRouter, ABC):
     Для правильной работы
     """
     def __init__(self, message: Message):
-        self._message: IMessageAdapter = Aiogram3MessageAdapter(message) # Объявим тип
+        self._message: IMessageAdapter = MessageFactory().get(message) # Объявим тип

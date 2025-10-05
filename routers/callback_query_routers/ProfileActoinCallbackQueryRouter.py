@@ -20,7 +20,7 @@ class ProfileActionCallbackQueryRouter(BaseCallbackQueryRouter):
         locale = await LocalesManager().get_locale(self._callback_query.get_from_user().get_id())
 
         text = i18n().get_text(SystemMessages.SETTINGS_MESSAGE, locale)
-        reply_markup = SettingsKeyboardCreator(locale).get_keyboard()
+        reply_markup = SettingsKeyboardCreator().get_keyboard(locale)
 
         # Исправляем сообщение
         await self._callback_query.get_message().edit_message(text=text, reply_markup=reply_markup)

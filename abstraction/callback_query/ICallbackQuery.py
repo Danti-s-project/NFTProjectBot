@@ -1,8 +1,8 @@
 from abc import ABC, abstractmethod
 from typing import Optional
 
-from abstraction.IMessage import IMessageAdapter
-from abstraction.IUser import IUser
+from abstraction.message.IMessage import IMessageAdapter
+from abstraction.user.IUser import IUser
 
 
 class ICallbackQuery(ABC):

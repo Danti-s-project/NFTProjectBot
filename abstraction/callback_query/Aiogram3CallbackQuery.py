@@ -2,11 +2,11 @@ from typing import Optional
 
 from aiogram.types import CallbackQuery
 
-from abstraction.Aiogram3Message import Aiogram3MessageAdapter
-from abstraction.Aiogram3User import Aiogram3User
-from abstraction.ICallbackQuery import ICallbackQuery
-from abstraction.IMessage import IMessageAdapter
-from abstraction.IUser import IUser
+from abstraction.message.Aiogram3Message import Aiogram3MessageAdapter
+from abstraction.user.Aiogram3User import Aiogram3User
+from abstraction.callback_query.ICallbackQuery import ICallbackQuery
+from abstraction.message.IMessage import IMessageAdapter
+from abstraction.user.IUser import IUser
 
 
 class Aiogram3CallbackQuery(ICallbackQuery):

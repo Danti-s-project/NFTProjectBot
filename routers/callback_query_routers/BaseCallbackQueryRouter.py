@@ -5,7 +5,8 @@ from aiogram.types import CallbackQuery
 
 from routers.IRouter import IRouter
 from aiogram.fsm.context import FSMContext
-from abstraction.Aiogram3CallbackQuery import Aiogram3CallbackQuery
+from abstraction.callback_query.ICallbackQuery import ICallbackQuery
+from abstraction.callback_query.CallbackQueryFactory import CallbackQueryFactory
 
 
 class BaseCallbackQueryRouter(IRouter, ABC):
@@ -13,5 +14,5 @@ class BaseCallbackQueryRouter(IRouter, ABC):
     Абстрактный класс для всех callback query роутеров
     """
     def __init__(self, callback_query: CallbackQuery, fsm_state: Optional[FSMContext] = None):
-        self._callback_query: Aiogram3CallbackQuery = Aiogram3CallbackQuery(callback_query)
+        self._callback_query: ICallbackQuery = CallbackQueryFactory().get(callback_query)
         self._fsm_state = fsm_state

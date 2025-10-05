@@ -23,10 +23,6 @@ class SettingsKeyboardCreator:
     def __init__(self, *args, **kwargs):
         if not self.__class__._initialized:
             self.__class__._initialized = True  # set initial flag to True
-            self.__init(*args, **kwargs)
-
-    def __init(self, locale):
-        self.__locale = locale
 
     @lru_cache(8)
     def __create_keyboard(self, locale) -> IInlineKeyboard:
@@ -47,10 +43,10 @@ class SettingsKeyboardCreator:
 
         return reply_markup
 
-    def get_keyboard(self) -> IInlineKeyboard:
+    def get_keyboard(self, locale) -> IInlineKeyboard:
         """
         Получите клавиатуру
         :return: объект клавиатуры
         """
 
-        return self.__create_keyboard(self.__locale)
+        return self.__create_keyboard(locale)
