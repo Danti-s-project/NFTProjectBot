@@ -25,5 +25,4 @@ class ProfileActionCallbackQueryRouter(BaseCallbackQueryRouter):
         reply_markup = SettingsKeyboardCreator(locale).get_keyboard()
 
         # Исправляем сообщение
-        await self._callback_query.get_message().edit_message_text(text)
-        await self._callback_query.get_message().edit_reply_markup(reply_markup)
+        await self._callback_query.get_message().edit_message(text=text, reply_markup=reply_markup)

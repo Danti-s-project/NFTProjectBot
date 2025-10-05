@@ -56,6 +56,4 @@ class SelectCourseCallbackQueryRouter(BaseCallbackQueryRouter):
 
         # Когда все готово, отправляем сообщение
 
-        # TODO: Превратить все в один запрос
-        await self._callback_query.get_message().edit_message_text(text)
-        await self._callback_query.get_message().edit_reply_markup(reply_markup=keyboard)
+        await self._callback_query.get_message().edit_message(text=text, reply_markup=keyboard)

@@ -10,6 +10,8 @@ from courses_service.CoursesManager import CoursesManager
 from dispatcher import dp, bot
 
 
+
+
 # Настройка логирования
 logger = setup_logger()
 

@@ -115,8 +115,7 @@ class SearchMenuActionCallbackQueryRouter(BaseCallbackQueryRouter):
         back_button.set_callback_data(Back().pack())
         keyboard.add_buttons_row([back_button])
 
-        await self._callback_query.get_message().edit_message_text(message)
-        await self._callback_query.get_message().edit_reply_markup(reply_markup=keyboard)
+        await self._callback_query.get_message().edit_message(text=message, reply_markup=keyboard)
 
     async def __model_menu_action(self) -> None:
         """
@@ -138,8 +137,7 @@ class SearchMenuActionCallbackQueryRouter(BaseCallbackQueryRouter):
         keyboard = FiltersChoiceKeyboardCreator(data, "model", locale).get_keyboard()
         message: IMessageAdapter = self._callback_query.get_message()
         message_text = i18n().get_text(SystemMessages.SELECT_SYMBOL_MESSAGE, locale)
-        await message.edit_message_text(message_text)
-        await message.edit_reply_markup(reply_markup=keyboard)
+        await message.edit_message(text=message_text, reply_markup=keyboard)
 
     async def __backdrop_menu_action(self) -> None:
         """
@@ -160,8 +158,7 @@ class SearchMenuActionCallbackQueryRouter(BaseCallbackQueryRouter):
 
         message: IMessageAdapter = self._callback_query.get_message()
         message_text = i18n().get_text(SystemMessages.SELECT_SYMBOL_MESSAGE, locale)
-        await message.edit_message_text(message_text)
-        await message.edit_reply_markup(reply_markup=keyboard)
+        await message.edit_message(text=message_text, reply_markup=keyboard)
 
     async def __symbol_menu_action(self) -> None:
         """
@@ -183,7 +180,6 @@ class SearchMenuActionCallbackQueryRouter(BaseCallbackQueryRouter):
 
         message: IMessageAdapter = self._callback_query.get_message()
         message_text = i18n().get_text(SystemMessages.SELECT_SYMBOL_MESSAGE, locale)
-        await message.edit_message_text(message_text)
-        await message.edit_reply_markup(reply_markup=keyboard)
+        await message.edit_message(text=message_text, reply_markup=keyboard)
 
         # Изменяем сообщение

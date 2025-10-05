@@ -21,4 +21,5 @@ class SelectLanguageCallbackQueryRouter(BaseCallbackQueryRouter):
         locale = await LocalesManager().get_locale(self._callback_query.get_from_user().get_id())
 
         # Отправляем сообщение об успешном изменении локали
-        await self._callback_query.get_message().edit_message_text(i18n().get_text(SystemMessages.LANGUAGE_SUCCESSFUL_CHANGED,locale))
+        await self._callback_query.get_message().edit_message(
+            text=i18n().get_text(SystemMessages.LANGUAGE_SUCCESSFUL_CHANGED, locale))

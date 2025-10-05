@@ -13,9 +13,8 @@ class SearchMenuBackButtonCallbackQueryRouter(BaseCallbackQueryRouter):
     """
 
     async def route(self) -> None:
-
         locale = await LocalesManager().get_locale(self._callback_query.get_from_user().get_id())
 
         keyboard = MainSearchMenuKeyboardMenu(locale).get_keyboard()
-        await self._callback_query.get_message().edit_reply_markup(reply_markup=keyboard)
-        await self._callback_query.get_message().edit_message_text(i18n().get_text(SystemMessages.SET_FILTERS_MESSAGE, locale))
+        await self._callback_query.get_message().edit_message(
+            text=i18n().get_text(SystemMessages.SET_FILTERS_MESSAGE, locale), reply_markup=keyboard)

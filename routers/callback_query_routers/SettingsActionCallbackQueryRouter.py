@@ -40,5 +40,4 @@ class SettingsActionCallbackQueryRouter(BaseCallbackQueryRouter):
         chinese_row.add_button(chinese_button)
 
 
-        await self._callback_query.get_message().edit_message_text(text)
-        await self._callback_query.get_message().edit_reply_markup(reply_markup=reply_markup)
+        await self._callback_query.get_message().edit_message(text, reply_markup=reply_markup)

@@ -60,10 +60,11 @@ class IMessageAdapter(ABC):
         pass
 
     @abstractmethod
-    async def edit_message_text(self, text: str) -> None:
+    async def edit_message(self, text: str = None, reply_markup = None) -> None:
         """
         Редактировать текст сообщения
 
+        :param reply_markup: объект клавиатуры
         :param text: новый текст сообщения
         :return: None
         """
