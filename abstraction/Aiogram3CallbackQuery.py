@@ -61,7 +61,6 @@ class Aiogram3CallbackQuery(ICallbackQuery):
         """
         return self._callback_query.data
 
-    # TODO: выбери докстринг стайл
     async def answer(self, text: Optional[str] = None, show_alert: bool = False) -> None:
         """
         Ответить на callback запрос

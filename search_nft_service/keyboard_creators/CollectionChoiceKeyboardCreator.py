@@ -7,8 +7,6 @@ from callbacks.search_callbacks import ShowCollectionsPage, ChoiceCollection
 from localization_service import i18n, SystemMessages, Locale
 
 
-# TODO: Заменить все keyboard креаторы на константы при возможности
-
 class CollectionChoiceKeyboardCreator:
     """
     Класс, создающий клавиатуру для выбора коллекции.

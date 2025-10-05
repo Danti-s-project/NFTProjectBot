@@ -1,8 +1,8 @@
+from abstraction.reply_keyboard.ReplyKeyboardRemove import ReplyKeyboardRemove
 from routers.fsm_routers.BaseFSMRouter import BaseFSMRouter
 from courses_service.CoursesManager import CoursesManager
 from courses_service.types import LessonPart, CoursesEnum
 from abstraction.reply_keyboard.ReplyKeyboardFactory import ReplyKeyboardFactory
-# TODO: Упростить этот упоротый импорт
 from localization_service import i18n, SystemMessages, LocalesManager
 
 from api.APIService import APIService
@@ -28,7 +28,7 @@ class CourseFSMRouter(BaseFSMRouter):
 
         # Если частей больше нет, заканчиваем урок
         if lesson_part is None:
-            await self._message.answer(i18n().get_text(SystemMessages.LESSON_IS_OVER, locale), reply_markup=None)
+            await self._message.answer(i18n().get_text(SystemMessages.LESSON_IS_OVER, locale), reply_markup=ReplyKeyboardRemove())
             await APIService().new_completed_lesson(
                 self._message.get_from_user().get_id(),
                 chapter,

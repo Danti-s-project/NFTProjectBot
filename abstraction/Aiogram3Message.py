@@ -59,13 +59,7 @@ class Aiogram3MessageAdapter(IMessageAdapter):
         :return: None
         """
 
-        # Получаем aiogram клавиатуру
-        if reply_markup:
-            reply_markup = reply_markup.get_keyboard_object()
-        else:
-            # TODO: Сделать свой объект ReplyKeyboardRemove
-            reply_markup = ReplyKeyboardRemove()
-        await self._message.answer(text, reply_markup=reply_markup)
+        await self._message.answer(text, reply_markup=reply_markup.get_keyboard_object())
 
     async def edit_reply_markup(self, reply_markup: IKeyboard) -> None:
         """

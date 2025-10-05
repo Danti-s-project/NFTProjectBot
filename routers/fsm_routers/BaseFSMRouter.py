@@ -11,7 +11,6 @@ from abstraction.fsm.FSMFactory import FSMFactory
 class BaseFSMRouter(IRouter, ABC):
     """
     Базовый роутер для fsm
-
     """
 
     def __init__(self, message: Message, fsm: FSMContext):
