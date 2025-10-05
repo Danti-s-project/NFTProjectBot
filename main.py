@@ -2,8 +2,7 @@ import asyncio
 
 
 from api.APIService import APIService
-from localization_service.LocalesManager import LocalesManager
-from localization_service.i18n import i18n
+from localization_service import i18n, LocalesManager
 from search_nft_service.SearchStateManager import SearchStateManager
 from utils.logging_setup import setup_logger
 from courses_service.CoursesManager import CoursesManager

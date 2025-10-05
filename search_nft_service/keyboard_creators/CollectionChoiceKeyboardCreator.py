@@ -4,8 +4,7 @@ from abstraction.inline_keyboard.IInlineKeyboard import IInlineKeyboard
 from abstraction.inline_keyboard.InlineKeyboardFactory import InlineKeyboardFactory
 from api.models import Collection
 from callbacks.search_callbacks import ShowCollectionsPage, ChoiceCollection
-from localization_service.i18n import i18n
-from localization_service.types import SystemMessages, Locale
+from localization_service import i18n, SystemMessages, Locale
 
 
 # TODO: Заменить все keyboard креаторы на константы при возможности

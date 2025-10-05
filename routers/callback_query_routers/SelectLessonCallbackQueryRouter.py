@@ -1,7 +1,7 @@
 from abstraction.reply_keyboard.ReplyKeyboardFactory import ReplyKeyboardFactory
 from courses_service.CoursesManager import CoursesManager
 from courses_service.types import LessonPart, CoursesEnum
-from localization_service.LocalesManager import LocalesManager
+from localization_service import LocalesManager
 from routers.callback_query_routers.BaseCallbackQueryRouter import BaseCallbackQueryRouter
 from fsm.course_fsm.CourseStateGroup import CourseStateGroup
 from callbacks.courses_callback import SelectLesson

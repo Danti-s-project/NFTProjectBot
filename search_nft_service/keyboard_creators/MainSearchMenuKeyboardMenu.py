@@ -4,8 +4,7 @@ from abstraction.inline_keyboard.InlineKeyboardFactory import InlineKeyboardFact
 from abstraction.inline_keyboard.IInlineKeyboard import IInlineKeyboard
 from abstraction.inline_keyboard.IInlineButton import IInlineButton
 from callbacks.search_callbacks import Action
-from localization_service.types import SystemMessages, Locale
-from localization_service.i18n import i18n
+from localization_service import SystemMessages, Locale, i18n
 
 
 class MainSearchMenuKeyboardMenu:

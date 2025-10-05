@@ -33,8 +33,6 @@ logger = logging.getLogger('APIService')
 T = TypeVar('T')
 
 
-# TODO: Сделать так, чтобы хранилась не ссылка на пагинацию а оффсеты и лимиты
-
 class APIService:
     """
     Сервис для работы с API

@@ -1,7 +1,7 @@
 from api.APIService import APIService
 from api.models import BaseNFTDataclass, PaginationAPIReponse
 from callbacks.search_callbacks import ShowFilterPage
-from localization_service.LocalesManager import LocalesManager
+from localization_service import LocalesManager
 from routers.callback_query_routers.BaseCallbackQueryRouter import BaseCallbackQueryRouter
 from search_nft_service.SearchStateManager import SearchStateManager
 from search_nft_service.keyboard_creators.FiltersChoiceKeyboardCreate import FiltersChoiceKeyboardCreator

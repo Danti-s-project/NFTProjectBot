@@ -5,7 +5,7 @@ import json
 from api.APIService import APIService
 from api.models import CoursesAPIResponse
 from courses_service.types import CoursesEnum, Course, LessonPart, Lesson, Chapter
-from localization_service.types import Locale
+from localization_service import Locale
 
 
 logger = logging.getLogger('CoursesManager')
@@ -31,7 +31,6 @@ class CoursesManager:
 
     def __init(self, *args, **kwargs):
         # Загрузка локалей в оперативку
-        # TODO: Добавить объектную природу
         self.__ru_course = self.__load_courses("courses_ru.json")
         self.__en_course = self.__load_courses("courses_en.json")
         self.__zh_course = self.__load_courses("courses_zh.json")

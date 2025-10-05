@@ -3,9 +3,7 @@ from courses_service.CoursesManager import CoursesManager
 from courses_service.types import LessonPart, CoursesEnum
 from abstraction.reply_keyboard.ReplyKeyboardFactory import ReplyKeyboardFactory
 # TODO: Упростить этот упоротый импорт
-from localization_service.LocalesManager import LocalesManager
-from localization_service.types import SystemMessages
-from localization_service.i18n import i18n
+from localization_service import i18n, SystemMessages, LocalesManager
 
 from api.APIService import APIService
 

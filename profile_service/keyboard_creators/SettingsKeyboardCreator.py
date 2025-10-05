@@ -1,8 +1,7 @@
 from abstraction.inline_keyboard.InlineKeyboardFactory import InlineKeyboardFactory
 from abstraction.inline_keyboard.IInlineKeyboard import IInlineKeyboard
 from callbacks.profile_callbacks import SettingsAction
-from localization_service.types import SystemMessages
-from localization_service.i18n import i18n
+from localization_service import SystemMessages, i18n
 
 
 class SettingsKeyboardCreator:

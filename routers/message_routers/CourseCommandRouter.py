@@ -4,9 +4,7 @@ from routers.message_routers.BaseMessageRouter import BaseMessageRouter
 from courses_service.types import CoursesEnum
 from courses_service.CoursesManager import CoursesManager
 from abstraction.inline_keyboard.InlineKeyboardFactory import InlineKeyboardFactory
-from localization_service.LocalesManager import LocalesManager
-from localization_service.types import SystemMessages
-from localization_service.i18n import i18n
+from localization_service import i18n, SystemMessages, LocalesManager
 from callbacks.courses_callback import SelectCourse
 
 

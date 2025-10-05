@@ -1,7 +1,5 @@
 from callbacks.profile_callbacks import ProfileAction
-from localization_service.LocalesManager import LocalesManager
-from localization_service.i18n import i18n
-from localization_service.types import SystemMessages
+from localization_service import i18n, SystemMessages, LocalesManager
 from profile_service.keyboard_creators.SettingsKeyboardCreator import SettingsKeyboardCreator
 from routers.callback_query_routers.BaseCallbackQueryRouter import BaseCallbackQueryRouter
 

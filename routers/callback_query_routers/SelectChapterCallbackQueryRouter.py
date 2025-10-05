@@ -3,9 +3,7 @@ from abstraction.inline_keyboard.InlineKeyboardFactory import InlineKeyboardFact
 from callbacks.courses_callback import SelectChapter, SelectLesson
 from courses_service.CoursesManager import CoursesManager
 from courses_service.types import CoursesEnum
-from localization_service.LocalesManager import LocalesManager
-from localization_service.types import SystemMessages
-from localization_service.i18n import i18n
+from localization_service import i18n, SystemMessages, LocalesManager
 
 
 class SelectChapterCallbackQueryRouter(BaseCallbackQueryRouter):

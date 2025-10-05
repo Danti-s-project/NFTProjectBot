@@ -9,9 +9,7 @@ from abstraction.inline_keyboard.IInlineKeyboard import IInlineKeyboard
 from routers.message_routers.BaseMessageRouter import BaseMessageRouter
 from search_nft_service.SearchStateManager import SearchStateManager
 from search_nft_service.keyboard_creators.CollectionChoiceKeyboardCreator import CollectionChoiceKeyboardCreator
-from localization_service.LocalesManager import LocalesManager
-from localization_service.types import SystemMessages, Locale
-from localization_service.i18n import i18n
+from localization_service import i18n, SystemMessages, LocalesManager, Locale
 
 
 class SearchRouter(BaseMessageRouter):
