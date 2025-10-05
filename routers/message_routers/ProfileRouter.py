@@ -25,13 +25,6 @@ class ProfileRouter(BaseMessageRouter):
         """
 
         user = await APIService().get_user(self._message.get_from_user().get_id())
-
-        # В случае если пользователь еще не вводил команду /start
-        if not user:
-            logger.debug(f"User {self._message.get_from_user().get_id()} use /profile command, but he doesn't exist")
-            await self._message.answer("Pls, send /start command first")
-            return
-
         await self.__send_message(user)
 
     async def __send_message(self, user: User) -> None:

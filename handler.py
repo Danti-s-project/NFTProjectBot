@@ -3,38 +3,38 @@
 """
 
 import logging
-from aiogram.filters.command import CommandStart, CommandObject,  Command
+
+from aiogram.filters.command import CommandStart, CommandObject, Command
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, CallbackQuery
 
-from routers.message_routers.StartRouter import StartRouter
+from callbacks.courses_callback import SelectCourse, SelectChapter, SelectLesson
+from callbacks.profile_callbacks import ProfileAction, SettingsAction, SelectLanguage
+from callbacks.search_callbacks import ChoiceCollection, ShowCollectionsPage, Back, Action, ChoiceFilter
+from dispatcher import dp
+from routers.Middleware.MainMiddleware import MainMiddleware
 from fsm.course_fsm.CourseStateGroup import CourseStateGroup
-from routers.message_routers.SearchRouter import SearchRouter
-from routers.message_routers.StartRouterWithDeeplLnk import StartRouterWithDeepLink
 from routers.callback_query_routers.ChoiceCollectionCallbackQueryRouter import ChoiceCollectionCallbackQueryRouter
-from routers.callback_query_routers.ShowCollectionsPageCallbackQueryRouter import ShowCollectionsPageCallbackQueryRouter
-from routers.callback_query_routers.SearchMenuActionCallbackQueryRouter import SearchMenuActionCallbackQueryRouter
-from routers.callback_query_routers.SearchMenuBackButtonCallbackQueryRouter import SearchMenuBackButtonCallbackQueryRouter
 from routers.callback_query_routers.ChoiceFilterCallbackQueryRouter import ChoiceFilterCallbackQueryRouter
-from routers.callback_query_routers.SelectLanguageCallbackQueryRouter import SelectLanguageCallbackQueryRouter
-from routers.message_routers.ProfileRouter import ProfileRouter
+from routers.callback_query_routers.ProfileActoinCallbackQueryRouter import ProfileActionCallbackQueryRouter
+from routers.callback_query_routers.SearchMenuActionCallbackQueryRouter import SearchMenuActionCallbackQueryRouter
+from routers.callback_query_routers.SearchMenuBackButtonCallbackQueryRouter import \
+    SearchMenuBackButtonCallbackQueryRouter
 from routers.callback_query_routers.SelectChapterCallbackQueryRouter import SelectChapterCallbackQueryRouter
 from routers.callback_query_routers.SelectCourseCallbackQueryRouter import SelectCourseCallbackQueryRouter
+from routers.callback_query_routers.SelectLanguageCallbackQueryRouter import SelectLanguageCallbackQueryRouter
 from routers.callback_query_routers.SelectLessonCallbackQueryRouter import SelectLessonCallbackQueryRouter
-from routers.message_routers.CourseCommandRouter import CourseCommandRouter
-from routers.fsm_routers.CourseFSMRouter import CourseFSMRouter
 from routers.callback_query_routers.SettingsActionCallbackQueryRouter import SettingsActionCallbackQueryRouter
-from routers.callback_query_routers.ProfileActoinCallbackQueryRouter import ProfileActionCallbackQueryRouter
-from callbacks.search_callbacks import ChoiceCollection, ShowCollectionsPage, Back, Action, ChoiceFilter
-from callbacks.profile_callbacks import ProfileAction, SettingsAction, SelectLanguage
-from callbacks.courses_callback import SelectCourse, SelectChapter, SelectLesson
-from dispatcher import dp
+from routers.callback_query_routers.ShowCollectionsPageCallbackQueryRouter import ShowCollectionsPageCallbackQueryRouter
+from routers.fsm_routers.CourseFSMRouter import CourseFSMRouter
+from routers.message_routers.CourseCommandRouter import CourseCommandRouter
+from routers.message_routers.ProfileRouter import ProfileRouter
+from routers.message_routers.SearchRouter import SearchRouter
+from routers.message_routers.StartRouter import StartRouter
+from routers.message_routers.StartRouterWithDeeplLnk import StartRouterWithDeepLink
 
 logger = logging.getLogger('handler')
 
-# TODO: Добавь проверку на то, что чел вводил /start перед тем как использовать команды
-
-# Починить локаль, в случае если ее нету
 
 @dp.message(CommandStart(deep_link=True))
 async def start_command_with_deeplink_handler(message: Message, command: CommandObject) -> None:
@@ -292,3 +292,7 @@ async def lesson_fsm_handler(message: Message, state: FSMContext) -> None:
 
     router = CourseFSMRouter(message, state)
     await router.route()
+
+
+dp.message.middleware(MainMiddleware())
+dp.callback_query.middleware(MainMiddleware())

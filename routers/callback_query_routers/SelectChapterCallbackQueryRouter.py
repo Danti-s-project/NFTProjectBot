@@ -39,8 +39,6 @@ class SelectChapterCallbackQueryRouter(BaseCallbackQueryRouter):
 
         keyboard = keyboard_factory.create_keyboard()
 
-        # TODO: Оптимизируй перебор
-
         for lesson in range(len(lesson_names)):
             if lesson in completed_lessons:
                 icon = "🟢"

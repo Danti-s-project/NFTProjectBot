@@ -1,4 +1,5 @@
 from typing import List, Dict, Optional, Set
+import logging
 import json
 
 from api.APIService import APIService
@@ -7,7 +8,7 @@ from courses_service.types import CoursesEnum, Course, LessonPart, Lesson, Chapt
 from localization_service.types import Locale
 
 
-# TODO: logging + end this
+logger = logging.getLogger('CoursesManager')
 
 
 class CoursesManager:
@@ -35,6 +36,8 @@ class CoursesManager:
         self.__en_course = self.__load_courses("courses_en.json")
         self.__zh_course = self.__load_courses("courses_zh.json")
 
+        logger.info("Courses manager успешно инициализирован!")
+
     def __load_courses(self, file_name: str) -> Dict[CoursesEnum, Course]:
         result = {}
 
@@ -54,7 +57,10 @@ class CoursesManager:
                 case "nft_sell_course":
                     result[CoursesEnum.NFT_SELL_COURSE] = course_object
                 case _:
+                    logger.critical(f"Unknown course {course_object}! Please check {file_name}")
                     raise ValueError(f"Unknown course {course_object}! Please check {file_name}")
+
+        logger.info(f"{file_name} course was successfully loaded!")
 
         return result
 
@@ -202,6 +208,7 @@ class CoursesManager:
             case Locale.ZH:
                 return self.__zh_course
             case _:
+                logger.critical("ATTEMPT TO GET UNKNOWN LOCALE!")
                 return {}
 
     def get_course_name(self, locale: Locale, course: CoursesEnum) -> str:
