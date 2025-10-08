@@ -4,7 +4,8 @@
 
 import enum
 from typing import List
-from dataclasses import dataclass
+
+from pydantic import BaseModel
 
 
 class CoursesEnum(enum.Enum):
@@ -19,8 +20,7 @@ class CoursesEnum(enum.Enum):
     # NFT_SELL_COURSE = "nft_sell_course"
 
 
-@dataclass
-class LessonPart:
+class LessonPart(BaseModel):
     """
     Часть диалога в уроке
 
@@ -33,8 +33,7 @@ class LessonPart:
     answer: str
 
 
-@dataclass
-class Lesson:
+class Lesson(BaseModel):
     """
     Урок в главе
 
@@ -47,8 +46,7 @@ class Lesson:
     parts: List[LessonPart]
 
 
-@dataclass
-class Chapter:
+class Chapter(BaseModel):
     """
     Глава в курсе
 
@@ -61,8 +59,7 @@ class Chapter:
     lessons: List[Lesson]
 
 
-@dataclass
-class Course:
+class Course(BaseModel):
     """
     Объект курса
 
@@ -75,4 +72,12 @@ class Course:
     name: str
     alias: str
     chapters: List[Chapter]
-    lessons_count: int
+
+    @property
+    def lessons_count(self) -> int:
+        """
+        Получить количество уроков в курсе
+        :return: Количество уркоов в курсе
+        """
+
+        return sum([len(i.lessons) for i in self.chapters])

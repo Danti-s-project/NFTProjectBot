@@ -2,7 +2,7 @@ from typing import Optional
 
 from abstraction.inline_keyboard.IInlineKeyboard import IInlineKeyboard
 from abstraction.inline_keyboard.InlineKeyboardFactory import InlineKeyboardFactory
-from api.models import PaginationAPIReponse, BaseNFTDataclass
+from api.models import PaginationAPIResponse, BaseNFTDataclass
 from callbacks.search_callbacks import ShowFilterPage, ChoiceFilter, Back
 from localization_service import i18n, Locale, SystemMessages
 
@@ -14,7 +14,7 @@ class FiltersChoiceKeyboardCreator:
 
     ROW_SIZE = 2
 
-    def __init__(self, items: PaginationAPIReponse[BaseNFTDataclass],
+    def __init__(self, items: PaginationAPIResponse[BaseNFTDataclass],
                  items_type: str,
                  locale: Locale,
                  next_page: Optional[str] = None,
@@ -35,7 +35,7 @@ class FiltersChoiceKeyboardCreator:
 
         row = []
 
-        for item in self.__items.result:
+        for item in self.__items.results:
             button = InlineKeyboardFactory.create_button()
             button.set_text(item.name)
             button.set_callback_data(

@@ -76,4 +76,4 @@ class SearchRouter(BaseMessageRouter):
         search_state = SearchStateManager().get(self._message.get_from_user().get_id())
         search_state.next_page = response.next
 
-        return response.result
+        return response.results

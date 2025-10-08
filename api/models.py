@@ -2,21 +2,19 @@
 Здесь расписаны все модели из API
 Модели нужны для введения объектной природы для каждого response
 """
-from dataclasses import dataclass
 from typing import TypeVar, Generic, Optional, List
 
+from pydantic import BaseModel
 
 T = TypeVar('T')
 
 
 # Модели объектов NFT
 
-@dataclass
-class BaseNFTDataclass:
+class BaseNFTDataclass(BaseModel):
     name: str
 
 
-@dataclass
 class Collection(BaseNFTDataclass):
     indexed: Optional[int]
     quantity: Optional[int]
@@ -33,28 +31,23 @@ class Collection(BaseNFTDataclass):
         return self.name.replace("-", " ")
 
 
-@dataclass
 class Owner(BaseNFTDataclass):
     pass
 
 
-@dataclass
 class Model(BaseNFTDataclass):
     pass
 
 
-@dataclass
 class Backdrop(BaseNFTDataclass):
     pass
 
 
-@dataclass
 class Symbol(BaseNFTDataclass):
     pass
 
 
-@dataclass
-class NFT:
+class NFT(BaseModel):
     collection: Collection
     owner: Owner
     model: Model
@@ -64,8 +57,7 @@ class NFT:
 
 # Модели сервиса Users
 
-@dataclass
-class User:
+class User(BaseModel):
     user_id: int
     username: str
     fullname: str
@@ -78,21 +70,18 @@ class User:
 
 # Модели ответов
 
-@dataclass
-class PaginationAPIReponse(Generic[T]):
+class PaginationAPIResponse(BaseModel, Generic[T]):
     count: int
-    next: Optional[str]
-    previous: Optional[str]
-    result: List[T]
+    next: Optional[str] = None
+    previous: Optional[str] = None
+    results: List[T]
 
 
-@dataclass
-class NFTSAPIResponse:
+class NFTSAPIResponse(BaseModel):
     result: List[NFT]
 
 
-@dataclass
-class CoursesAPIResponse:
+class CoursesAPIResponse(BaseModel):
     user_id: int
     chapter: int
     lesson: int

@@ -71,56 +71,7 @@ class CoursesManager:
         :return: Курс
         """
 
-        course_object = Course(name=course["name"], alias=course["alias"], chapters=[], lessons_count=0)
-
-        for chapter in course["chapters"]:
-            chapter_object = self.__serialize_chapter(chapter)
-            course_object.chapters.append(chapter_object)
-            course_object.lessons_count += len(chapter_object.lessons)
-
-        return course_object
-
-    def __serialize_chapter(self, chapter: dict) -> Chapter:
-        """
-        Сериализовать главу из json в объектую природу
-
-        :param chapter: Загруженная глава из json
-        :return: Объект главы
-        """
-
-        chapter_object = Chapter(name=chapter["name"], lessons=[])
-
-        for lesson in chapter["lessons"]:
-            chapter_object.lessons.append(self.__serialize_lesson(lesson))
-
-        return chapter_object
-
-    def __serialize_lesson(self, lesson: dict) -> Lesson:
-        """
-        Сериализовать урок из json в объектую природу
-
-        :param lesson: Загруженный урок из json
-        :return: Объект урока
-        """
-
-        lesson_object = Lesson(name=lesson["name"], parts=[])
-
-        for part in lesson["parts"]:
-            lesson_object.parts.append(self.__serialize_lesson_part(part))
-
-        return lesson_object
-
-    def __serialize_lesson_part(self, lesson_part: dict) -> LessonPart:
-        """
-        Сериализовать часть урока из json в объектую природу
-/
-        :param lesson_part: Загруженная часть урока из json
-        :return: Объект части урока
-        """
-
-        lesson_part = LessonPart(text=lesson_part["text"], answer=lesson_part["answer"])
-
-        return lesson_part
+        return Course(**course)
 
     async def get_completed_courses(self, user_id: int) -> List[CoursesEnum]:
         """

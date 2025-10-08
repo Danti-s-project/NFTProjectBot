@@ -1,5 +1,5 @@
 from api.APIService import APIService
-from api.models import BaseNFTDataclass, PaginationAPIReponse
+from api.models import BaseNFTDataclass, PaginationAPIResponse
 from callbacks.search_callbacks import ShowFilterPage
 from localization_service import LocalesManager
 from routers.callback_query_routers.BaseCallbackQueryRouter import BaseCallbackQueryRouter
@@ -33,7 +33,7 @@ class ShowFilterPageCallbackQueryRouter(BaseCallbackQueryRouter):
         # Отправляем сообщение
         await self._callback_query.get_message().edit_reply_markup(reply_markup=keyboard)
 
-    async def __get_page(self, url: str) -> PaginationAPIReponse:
+    async def __get_page(self, url: str) -> PaginationAPIResponse:
         """
         Получить следующую страницу с коллекциями
 

@@ -3,7 +3,7 @@ import os
 from abstraction.message.IMessage import IMessageAdapter
 from abstraction.inline_keyboard.InlineKeyboardFactory import InlineKeyboardFactory
 from api.APIService import APIService
-from api.models import NFTSAPIResponse, PaginationAPIReponse, Symbol, Model, Backdrop
+from api.models import NFTSAPIResponse, PaginationAPIResponse, Symbol, Model, Backdrop
 from callbacks.search_callbacks import Action, Back
 from routers.callback_query_routers.BaseCallbackQueryRouter import BaseCallbackQueryRouter
 from search_nft_service.SearchStateManager import SearchStateManager
@@ -126,7 +126,7 @@ class SearchMenuActionCallbackQueryRouter(BaseCallbackQueryRouter):
 
         # Получаем нужные данные для формирования сообщений
         search_state = SearchStateManager().get(self._callback_query.get_from_user().get_id())
-        data: PaginationAPIReponse[Model] = await APIService().get_models(
+        data: PaginationAPIResponse[Model] = await APIService().get_models(
             f"{SearchMenuActionCallbackQueryRouter.HOST}"
             f"/api/v1/models/?collections={search_state.collection.name}&offset=0&limit={SearchMenuActionCallbackQueryRouter.PAGE_LIMIT}")
         search_state.next_page = data.next
@@ -147,7 +147,7 @@ class SearchMenuActionCallbackQueryRouter(BaseCallbackQueryRouter):
         locale: Locale = await LocalesManager().get_locale(self._callback_query.get_from_user().get_id())
 
         search_state = SearchStateManager().get(self._callback_query.get_from_user().get_id())
-        data: PaginationAPIReponse[Backdrop] = await APIService().get_backdrops(
+        data: PaginationAPIResponse[Backdrop] = await APIService().get_backdrops(
             f"{SearchMenuActionCallbackQueryRouter.HOST}"
             f"/api/v1/backdrops/?collections={search_state.collection.name}&offset=0&limit={SearchMenuActionCallbackQueryRouter.PAGE_LIMIT}")
         search_state.next_page = data.next
@@ -166,7 +166,7 @@ class SearchMenuActionCallbackQueryRouter(BaseCallbackQueryRouter):
         """
 
         search_state = SearchStateManager().get(self._callback_query.get_from_user().get_id())
-        data: PaginationAPIReponse[Symbol] = await APIService().get_symbols(
+        data: PaginationAPIResponse[Symbol] = await APIService().get_symbols(
             f"{SearchMenuActionCallbackQueryRouter.HOST}"
             f"/api/v1/symbols/?collections={search_state.collection.name}&offset=0&limit={SearchMenuActionCallbackQueryRouter.PAGE_LIMIT}")
 

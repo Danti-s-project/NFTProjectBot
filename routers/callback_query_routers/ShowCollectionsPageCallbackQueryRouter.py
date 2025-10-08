@@ -48,4 +48,4 @@ class ShowCollectionsPageCallbackQueryRouter(BaseCallbackQueryRouter):
         search_state.next_page = response.next
         search_state.previous_page = response.previous
 
-        return response.result
+        return response.results

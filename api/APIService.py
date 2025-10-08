@@ -14,7 +14,7 @@ import aiohttp
 import dotenv
 from aiohttp import ClientSession
 
-from api.models import (PaginationAPIReponse,
+from api.models import (PaginationAPIResponse,
                         Collection,
                         Model,
                         Backdrop,
@@ -64,7 +64,7 @@ class APIService:
 
             return self.__status
 
-        async def json(self) -> dict:
+        async def json(self) -> dict | list:
             """
             метод json в aiohttp.ClientResponse - асинхронныый.
             Сделаю его асинхронным и здесь, чтобы не нарушать совместимости
@@ -187,7 +187,7 @@ class APIService:
             if response is not None:
                 response.close()
 
-    async def endpoint_with_pagination_request(self, url, model: Type[T]) -> PaginationAPIReponse[T]:
+    async def endpoint_with_pagination_request(self, url, model: Type[T]) -> PaginationAPIResponse[T]:
         """
         GET запрос на эндпоинт с пагинацией
         Все ответы от сервера на эндпоинты с пагинацией имеют общий вид:
@@ -204,25 +204,10 @@ class APIService:
         :return: PaginationAPIResponse с полем result типа List[model]
         """
 
-        # Запрос
         response = await self.__make_request(REQUEST_TYPE.GET, url)
+        return PaginationAPIResponse[model](**await response.json())
 
-        # Сереализация ответа
-        json_data = await response.json()
-        result_field = []
-
-        for item in json_data["results"]:
-            result_field.append(model(**item))
-
-        serialize_response = PaginationAPIReponse(
-            count=json_data["count"],
-            next=json_data["next"],
-            previous=json_data["previous"],
-            result=result_field)
-
-        return serialize_response
-
-    async def get_collections(self, url: str) -> PaginationAPIReponse[Collection]:
+    async def get_collections(self, url: str) -> PaginationAPIResponse[Collection]:
         """
         Получить коллекции со страницы URL.
 
@@ -232,7 +217,7 @@ class APIService:
 
         return await self.endpoint_with_pagination_request(url, Collection)
 
-    async def get_symbols(self, url: str) -> PaginationAPIReponse[Symbol]:
+    async def get_symbols(self, url: str) -> PaginationAPIResponse[Symbol]:
         """
         Получить страницу узоров по указанному URL
 
@@ -242,7 +227,7 @@ class APIService:
 
         return await self.endpoint_with_pagination_request(url, Symbol)
 
-    async def get_backdrops(self, url: str) -> PaginationAPIReponse[Backdrop]:
+    async def get_backdrops(self, url: str) -> PaginationAPIResponse[Backdrop]:
         """
         Получить страницу фонов по указанному URL
 
@@ -252,7 +237,7 @@ class APIService:
 
         return await self.endpoint_with_pagination_request(url, Backdrop)
 
-    async def get_models(self, url: str) -> PaginationAPIReponse[Model]:
+    async def get_models(self, url: str) -> PaginationAPIResponse[Model]:
         """
         Получить страницу моделей по указанному URL
 
@@ -341,7 +326,6 @@ class APIService:
             REQUEST_TYPE.GET,
             f"{APIService.HOST}/api/v1/nfts/{params}"
         )
-
         # Сериализуем данные
 
         result = []
@@ -357,7 +341,7 @@ class APIService:
 
             result.append(nft)
 
-        serialize_response = NFTSAPIResponse(result)
+        serialize_response = NFTSAPIResponse(result=result)
 
         return serialize_response
 
